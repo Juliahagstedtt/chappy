@@ -5,8 +5,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
 	proxy: {
-		// Använd den port som står i .env
-		'/api': 'http://localhost:1337/'
+		'/api': 'http://localhost:10000/'
 	}
   }
 })

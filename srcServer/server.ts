@@ -1,7 +1,7 @@
 import express from "express";
 
 const app = express();
-const port = 1337;
+const port = 10000;
 
 app.use(express.static("./dist/"));
 
