@@ -1,9 +1,9 @@
-import express, { Request, Response } from 'express';
+import express, { type Request, type Response, type Router } from 'express'
 import dotenv from 'dotenv';
+import { genSalt, hash } from "bcrypt";
+import crypto from "crypto";
 import db, { myTable } from '../data/dynamoDb.js'
 import { userPostSchema } from '../data/validation.js'
-import crypto from "crypto";
-import { error } from 'console';
 
 
 dotenv.config();
@@ -27,10 +27,13 @@ router.post('/register', async (req: Request, res: Response) => {
 
     const userId = crypto.randomUUID();
     console.log('Nytt användar Id', userId)
-
-
     
-    // TODO: Hasha lösenordet med hjälp av bcrypt
+    // TODO: Hasha lösenordet med bcrypt
+    const salt = await genSalt();
+    const hashedPassword = await hash(password, salt);
+    console.log('Hashat lösenord', hashedPassword)
+
+
     // TODO: Fixa objektet som ska sparas i DynamoDB
     // TODO: Spara användaren i DynamoDB
     // TODO: Response till frontend 
