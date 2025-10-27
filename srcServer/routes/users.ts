@@ -2,6 +2,7 @@ import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import db, { myTable } from '../data/dynamoDb.js'
 import { userPostSchema } from '../data/validation.js'
+import crypto from "crypto";
 import { error } from 'console';
 
 
