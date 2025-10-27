@@ -23,6 +23,12 @@ router.post('/register', async (req: Request, res: Response) => {
     const { username, password } = parsed.data;
 
     // TODO: Skapa unikt ID
+
+    const userId = crypto.randomUUID();
+    console.log('Nytt användar Id', userId)
+
+
+    
     // TODO: Hasha lösenordet med hjälp av bcrypt
     // TODO: Fixa objektet som ska sparas i DynamoDB
     // TODO: Spara användaren i DynamoDB
