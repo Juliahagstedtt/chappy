@@ -4,7 +4,8 @@ import { genSalt, hash } from "bcrypt";
 import crypto from "crypto";
 import db, { myTable } from '../data/dynamoDb.js'
 import { userPostSchema } from '../data/validation.js'
-import { email } from 'zod';
+import { PutCommand } from '@aws-sdk/lib-dynamodb';
+
 
 
 dotenv.config();
@@ -50,9 +51,21 @@ router.post('/register', async (req: Request, res: Response) => {
 
 
     // TODO: Spara användaren i DynamoDB
+    try {
+        const command = new PutCommand ({
+            TableName: myTable,
+            Item: userItem 
+        });
+
+        await db.send(command);
+        console.log('Användare sparad i DynomoDB');
+
+        } catch (error) {
+            console.log('Fel vid sparning', error);
+            return res.status(500).send({ error: 'Kunde inte spara användrae i DynamoDB' });
+        }
     // TODO: Response till frontend 
     // TODO skapa JWT token senare
-
 })
     
 
