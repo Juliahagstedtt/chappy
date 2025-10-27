@@ -7,13 +7,12 @@ dotenv.config();
 
 const router = express.Router();
 
-// Endpoint POST - Logga in användare, generera JWT
+// Endpoint POST - Skicka direktmeddelande (DM)
 
-router.post('/register', async (req, res) => {
+router.post('/dm', async (req, res) => {
 
 
     
 })
     
 export default router;
-
