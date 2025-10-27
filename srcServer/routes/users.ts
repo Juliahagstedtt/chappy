@@ -4,6 +4,7 @@ import { genSalt, hash } from "bcrypt";
 import crypto from "crypto";
 import db, { myTable } from '../data/dynamoDb.js'
 import { userPostSchema } from '../data/validation.js'
+import { email } from 'zod';
 
 
 dotenv.config();
@@ -35,6 +36,19 @@ router.post('/register', async (req: Request, res: Response) => {
 
 
     // TODO: Fixa objektet som ska sparas i DynamoDB
+    const userItem = {
+        PK: `USER#{userId}`,
+        SK: `INFO`,
+        name: username,
+        email: username,
+        password: hashedPassword,
+        type: 'user',
+    };
+
+    console.log('User objekt redo att sparas', userItem)
+
+
+
     // TODO: Spara användaren i DynamoDB
     // TODO: Response till frontend 
     // TODO skapa JWT token senare
