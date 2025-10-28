@@ -10,9 +10,6 @@ dotenv.config();
 
 const router = express.Router();
 
-// Endpoint POST - registrera ny användare, hasha ett lösenord som sparas
-// Users med GET - Hämta info om inloggad användare
-
 router.post('/register', async (req, res) => {
     
     const parsed = userPostSchema.safeParse(req.body);

@@ -10,6 +10,8 @@ const router = express.Router();
 router.post('/login', async (req, res) => {
 
     // TODO: Hämta email och lösenord
+
+    
     // TODO: validera email och lösenord med zod (finns redan)
     // TODO: hämta användare från DB med hjälp av email
     // TODO: jämföra lösenord med bcrypt
