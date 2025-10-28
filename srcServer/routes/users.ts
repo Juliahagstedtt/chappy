@@ -5,8 +5,7 @@ import crypto from "crypto";
 import db, { myTable } from '../data/dynamoDb.js'
 import { userPostSchema } from '../data/validation.js'
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
-import { success } from 'zod';
-
+import { createToken } from '../data/auth.js';
 
 
 dotenv.config();
@@ -65,7 +64,7 @@ router.post('/register', async (req: Request, res: Response) => {
             console.log('Fel vid sparning', error);
             return res.status(500).send({ error: 'Kunde inte spara användrae i DynamoDB' });
         }
-        
+
     // TODO: Response till frontend 
         res.status(201).send({
             success: true,
