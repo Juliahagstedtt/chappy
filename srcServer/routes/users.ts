@@ -1,4 +1,4 @@
-import express, {} from 'express';
+import express from 'express';
 import dotenv from 'dotenv';
 import { genSalt, hash } from "bcrypt";
 import crypto from "crypto";
@@ -34,7 +34,7 @@ router.post('/register', async (req, res) => {
         Pk: `USER#${userId}`,
         Sk: `INFO`,
         name: username,
-        email: username,
+        // email,
         password: hashedPassword,
         type: 'user',
     };

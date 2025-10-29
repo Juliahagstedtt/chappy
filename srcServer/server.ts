@@ -10,7 +10,7 @@ import messageRoute from './routes/messages.js'
 dotenv.config();
 
 const app = express();
-const port = 10000;
+const port = Number(process.env.PORT) || 10000;
 
 
 app.use(cors())
