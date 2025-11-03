@@ -1,7 +1,8 @@
 import express from 'express';
 import db, { myTable } from '../data/dynamoDb.js'
 import { userPostSchema } from '../data/validation.js';
-import { QueryCommand } from "@aws-sdk/lib-dynamodb";
+import { QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { error } from 'console';
 
 
 const router = express.Router();
@@ -19,7 +20,25 @@ router.post('/login', async (req, res) => {
 
     const { username, password } = parsed.data;
 
-    // TODO: hämta användare från DB med hjälp av email
+    // TODO: hämta användare från DB
+
+    try {
+        const command = new ScanCommand({
+            TableName: myTable,
+            FilterExpression: "name = :username",
+            ExpressionAttributeValues: { "username": username }
+        });
+        
+    const result = await db.send(command);
+
+    if (!result.Items || result.Items.length === 0) {
+        return res.status(404).send({ error: "Användaren finns inte" });
+    }
+        const user = result.Items[0];
+    } catch (error) {
+        console.error(error);
+        res.status(500).send({ error: "Något gick fel vid inloggning" });
+    }
 
 
     // TODO: jämföra lösenord med bcrypt
