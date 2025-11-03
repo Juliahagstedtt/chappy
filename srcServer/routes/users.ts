@@ -3,10 +3,30 @@ import { genSalt, hash } from "bcrypt";
 import crypto from "crypto";
 import db, { myTable } from '../data/dynamoDb.js';
 import { userPostSchema } from '../data/validation.js';
-import { PutCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { createToken } from '../data/auth.js';
 
 const router = express.Router();
+
+router.get('/', async (req, res) => {
+    try {
+        const command = new ScanCommand({
+            TableName: myTable,
+            FilterExpression: "begins_with(Pk, :userPrefix)",
+            ExpressionAttributeValues: {
+                ":userPrefix": "USER#"
+            }
+        });
+
+        const result = await db.send(command);
+        res.status(200).send(result.Items);
+    } catch (error) {
+        console.error("Fel vid hämning av användare", error);
+        res.status(500).send({ error: "kunde inte hämta användaren" });
+    }
+});
+
+
 
 router.post('/register', async (req, res) => {
     

@@ -19,7 +19,7 @@ function App() {
 
       <nav>
         <NavLink to="/"></NavLink>
-        <NavLink to="/Menu"></NavLink>
+        <NavLink to="/Menu">Menu</NavLink>
 
         {/* <NavLink to="/register">Register</NavLink> */}
       </nav>
