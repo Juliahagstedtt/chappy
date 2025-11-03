@@ -30,7 +30,6 @@ router.post('/register', async (req, res) => {
         Pk: `USER#${userId}`,
         Sk: `INFO`,
         name: username,
-        // email,
         password: hashedPassword,
         type: 'user',
     };
