@@ -1,13 +1,10 @@
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
 import userRoute from './routes/users.js'
 import loginRoute from './routes/login.js'
 import channelRoute from './routes/channels.js'
 import messageRoute from './routes/messages.js'
 
-
-dotenv.config();
 
 const app = express();
 const port = Number(process.env.PORT) || 10000;

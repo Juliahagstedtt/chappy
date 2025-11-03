@@ -1,12 +1,10 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import { genSalt, hash } from "bcrypt";
 import crypto from "crypto";
 import db, { myTable } from '../data/dynamoDb.js';
 import { userPostSchema } from '../data/validation.js';
 import { PutCommand } from '@aws-sdk/lib-dynamodb';
 import { createToken } from '../data/auth.js';
-dotenv.config();
 
 const router = express.Router();
 
@@ -22,12 +20,10 @@ router.post('/register', async (req, res) => {
     
     // TODO: Skapa unikt ID
     const userId = crypto.randomUUID();
-    // console.log('Nytt användar Id', userId);
 
     // TODO: Hasha lösenordet med bcrypt
     const salt = await genSalt();
     const hashedPassword = await hash(password, salt);
-    // console.log('Hashat lösenord', hashedPassword);
 
     // TODO: Fixa objektet som ska sparas i DynamoDB
     const userItem = {
@@ -38,7 +34,6 @@ router.post('/register', async (req, res) => {
         password: hashedPassword,
         type: 'user',
     };
-    // console.log('User objekt redo att sparas', userItem);
 
     // TODO: Spara användaren i DynamoDB
     try {
@@ -48,7 +43,6 @@ router.post('/register', async (req, res) => {
         });
 
         await db.send(command);
-        // console.log('Användare sparad i DynomoDB');
 
         // TODO skapa JWT token senare
         const token = createToken(userId);

@@ -1,0 +1,44 @@
+.register-container {
+    background-color: #cdf6ec7c;
+    height: 320px;
+    margin: 110px;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+/* .register-input {
+    
+} */
+
+.register {
+    background-color: #FF3499;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 9px;
+    width: 100px;
+    cursor: pointer;
+    margin-bottom: 30px;
+    margin: 10px;
+}
+
+.register:hover {
+    background-color: #ff87c3;
+
+}
+
+.login:hover {
+    background-color: #ff87c3;
+
+}
+
+.login {
+    background-color: #FF3499;
+    color: white;
+    border: none;
+    padding: 10px;
+    border-radius: 9px;
+    width: 100px;
+    cursor: pointer;
+    margin-bottom: 30px;
+}

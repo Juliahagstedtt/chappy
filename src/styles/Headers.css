@@ -1,0 +1,27 @@
+.head-menu {
+    background-color: rgba(0, 0, 0, 0.063);
+    padding: 20px;
+    width: 100%;
+    border-bottom: 3px solid #FF3499;
+    border: none;
+}
+
+.head-menu nav {
+    max-width: 1800px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+.logo {
+    background: transparent;
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+}
+ 
+.logo:hover {
+    border: none;
+}

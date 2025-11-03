@@ -1,11 +1,8 @@
 import express from 'express';
-import dotenv from 'dotenv';
 import db, { myTable } from '../data/dynamoDb.js'
 import { userPostSchema } from '../data/validation.js';
 import { QueryCommand } from "@aws-sdk/lib-dynamodb";
 
-
-dotenv.config();
 
 const router = express.Router();
 
