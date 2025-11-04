@@ -4,6 +4,7 @@ import { userPostSchema } from '../data/validation.js';
 import { QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { compare } from 'bcrypt';
 import { createToken } from '../data/auth.js';
+import { success } from 'zod';
 
 
 const router = express.Router();
@@ -47,8 +48,14 @@ router.post('/login', async (req, res) => {
     // TODO: skapa jwt token
     const token = createToken(user.Pk);
 
-    // TODO: skapa user id
     // TODO: skicka tillbaka succsess response
+    res.status(200).send({
+        success: true,
+        message: "Inloggningen lyckades",
+        userId: user.Pk,
+        token
+    });
+
     // TODO: catch för att fånga fel
 
 
