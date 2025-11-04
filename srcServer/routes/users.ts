@@ -49,7 +49,7 @@ router.post('/register', async (req, res) => {
     const userItem = {
         Pk: `USER#${userId}`,
         Sk: `INFO`,
-        name: username,
+        username: username,
         password: hashedPassword,
         type: 'user',
     };

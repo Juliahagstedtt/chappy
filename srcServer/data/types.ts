@@ -9,6 +9,6 @@ export const userPostSchema = z.object({
 export const userSchema = z.object({
     Pk: z.string(),
     password: z.string(),
-    name: z.string()
+    username: z.string()
 })
 

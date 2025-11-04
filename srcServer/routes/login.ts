@@ -8,7 +8,7 @@ import { createToken } from '../data/auth.js';
 
 const router = express.Router();
 
-router.post('/login', async (req, res) => {
+router.post('/', async (req, res) => {
   try {
     const parsed = userPostSchema.safeParse(req.body);
 
@@ -22,11 +22,13 @@ router.post('/login', async (req, res) => {
   
         const command = new ScanCommand({
             TableName: myTable,
-            FilterExpression: "name = :username",
+            FilterExpression: "#n = :username",
+            ExpressionAttributeNames: { "#n": "username" },
             ExpressionAttributeValues: { ":username": username}
         });
         
     const result = await db.send(command);
+    console.log(result.Items);
 
     if (!result.Items || result.Items.length === 0) {
         return res.status(404).send({ error: "Användaren finns inte" });
@@ -51,7 +53,7 @@ router.post('/login', async (req, res) => {
 
     // TODO: catch för att fånga fel
     } catch (error) {
-        console.error(error);
+        console.error("Login-fel:", error);
       return res.status(500).send({ error: "Något gick fel vid inloggning" });
     }
 
