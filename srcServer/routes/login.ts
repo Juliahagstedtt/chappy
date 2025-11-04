@@ -2,15 +2,14 @@ import express from 'express';
 import db, { myTable } from '../data/dynamoDb.js'
 import { userPostSchema } from '../data/validation.js';
 import { QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
-import { error } from 'console';
-
+import { compare } from 'bcrypt';
 
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
 
-    // TODO: Hämta email och lösenord
-    // TODO: validera email och lösenord med zod (finns redan)
+    // TODO: Hämta username och lösenord
+    // TODO: validera username och lösenord med zod (finns redan)
 
     const parsed = userPostSchema.safeParse(req.body);
 
@@ -40,8 +39,10 @@ router.post('/login', async (req, res) => {
         res.status(500).send({ error: "Något gick fel vid inloggning" });
     }
 
-
     // TODO: jämföra lösenord med bcrypt
+    const match = await compare(password, user.password);
+    if (!match) return res.status(401).send({ error: "Fel lösenord" });
+
     // TODO: skapa jwt token
     // TODO: skapa user id
     // TODO: skicka tillbaka succsess response
