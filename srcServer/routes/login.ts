@@ -1,19 +1,15 @@
 import express from 'express';
 import db, { myTable } from '../data/dynamoDb.js'
-import { userPostSchema } from '../data/validation.js';
+import { userPostSchema, userSchema } from '../data/types.js';
 import { QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { compare } from 'bcrypt';
 import { createToken } from '../data/auth.js';
-import { success } from 'zod';
 
 
 const router = express.Router();
 
 router.post('/login', async (req, res) => {
-
-    // TODO: Hämta username och lösenord
-    // TODO: validera username och lösenord med zod (finns redan)
-
+  try {
     const parsed = userPostSchema.safeParse(req.body);
 
     if (!parsed.success) {
@@ -22,8 +18,8 @@ router.post('/login', async (req, res) => {
 
     const { username, password } = parsed.data;
 
-    // TODO: hämta användare från DB
-    try {
+
+  
         const command = new ScanCommand({
             TableName: myTable,
             FilterExpression: "name = :username",
@@ -35,11 +31,8 @@ router.post('/login', async (req, res) => {
     if (!result.Items || result.Items.length === 0) {
         return res.status(404).send({ error: "Användaren finns inte" });
     }
-        user = result.Items[0];
-    } catch (error) {
-        console.error(error);
-      return res.status(500).send({ error: "Något gick fel vid inloggning" });
-    }
+
+    const user = userSchema.parse(result.Items[0]);
 
     // TODO: jämföra lösenord med bcrypt
     const match = await compare(password, user.password);
@@ -57,7 +50,10 @@ router.post('/login', async (req, res) => {
     });
 
     // TODO: catch för att fånga fel
-
+    } catch (error) {
+        console.error(error);
+      return res.status(500).send({ error: "Något gick fel vid inloggning" });
+    }
 
     
 })

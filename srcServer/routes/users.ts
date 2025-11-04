@@ -2,7 +2,7 @@ import express from 'express';
 import { genSalt, hash } from "bcrypt";
 import crypto from "crypto";
 import db, { myTable } from '../data/dynamoDb.js';
-import { userPostSchema } from '../data/validation.js';
+import { userPostSchema } from '../data/types.js';
 import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
 import { createToken } from '../data/auth.js';
 
