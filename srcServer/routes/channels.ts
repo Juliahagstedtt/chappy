@@ -1,18 +1,29 @@
-import express from 'express';
+import express, { response } from 'express';
 import db, { myTable } from '../data/dynamoDb.js'
+import {  ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { error } from 'console';
 
 
 const router = express.Router();
 
+
 // GET - Hämta alla kanaler (öppna + låsta)
-
-// GET id - Hämta meddelanden i en kanal
-
-// POST id - Skicka meddelande till kanal
 
 router.get('/api/channels', async (req, res) => {
 
 // TODO: Hämta alla kanaler från DB
+try {
+    const data = await db.send(new ScanCommand({ 
+        TableName: "channel" 
+    }));
+
+    res.send(data.Items);
+
+
+} catch (err) {
+    res.status(500).send({ error: "Fel vid hämtning av kanal" });
+}
+
 
 // TODO: Filtrera baserat på behörighet:
 //          Om kanalen är låst kontrollera om man är inloggad
@@ -23,7 +34,7 @@ router.get('/api/channels', async (req, res) => {
 // TODO: Ev sortera/filtera kanaler 
 })
 
-
+// GET id - Hämta meddelanden i en kanal
 
 router.get('/api/channels/:channelId/messages', async (req, res) => {
 // TODO: Hämta kanalens id från url param
@@ -34,8 +45,6 @@ router.get('/api/channels/:channelId/messages', async (req, res) => {
 //          Om kanalen är låst kontrollera om man är inloggad
 //          Gäster kan bara se öppna kanaler (kan inte se låsta kanaler)
 
-
-
 // TODO: Hämta meddelande från DB
 
 // TODO: Returnera meddelande
@@ -45,7 +54,7 @@ router.get('/api/channels/:channelId/messages', async (req, res) => {
 
 
 
-
+// POST id - Skicka meddelande till kanal
 router.post('/api/channels/:channelId/messages', async (req, res) => {
 
 // TODO: hämta Kanalens id från url param
