@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import '../styles/Register.css';
 
 
@@ -7,6 +8,8 @@ const [username, SetUsername] = useState("");
 const [password, SetPassword] = useState("");
 const [message, setMessage] = useState("");
 const [token, setToken] = useState(null);
+
+const navigate = useNavigate(); 
 
 async function handleRegister() {
     try {
