@@ -1,11 +1,11 @@
 // import { useState } from 'react'
 import './App.css'
-import {  Routes, Route, NavLink } from 'react-router-dom';
+import { Routes, Route, NavLink } from 'react-router-dom';
 import Headers from "./pages/Headers";
 import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
-import LoggedIn from "./pages/LoggedIn"
+import LoggedIn from "./pages/LoggedIn";
 
 function App() {
   return (
@@ -14,7 +14,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/Menu" element={<Menu />} />
+        <Route path="/menu" element={<Menu />} />
         <Route path="/loggedin" element={<LoggedIn />} />
 
 

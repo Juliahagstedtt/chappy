@@ -18,9 +18,9 @@ useEffect(() => {
 return (
 <div className="menu-container">
       <h1>DM's</h1>
-      {users.map(user => (
+      {/* {users.map(user => (
         <p key={user.Pk} className="menu-text"> {user.name}</p>
-      ))}
+      ))} */}
       <p className="menu-text">chetas</p>
       <p className="menu-text">taco-masters</p>
       <p className="menu-text">potter-squad</p>

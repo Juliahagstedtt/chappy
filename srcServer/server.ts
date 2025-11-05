@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
-import userRoute from './routes/users.js'
-import loginRoute from './routes/login.js'
-import channelRoute from './routes/channels.js'
-import messageRoute from './routes/messages.js'
+import userRoute from './routes/Register.js'
+import loginRoute from './routes/Login.js'
+import channelRoute from './routes/Channels.js'
+import messageRoute from './routes/Messages.js'
 
 
 const app = express();
