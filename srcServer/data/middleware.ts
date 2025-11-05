@@ -1,0 +1,41 @@
+import type { Request, Response, NextFunction } from "express";
+import { verifyToken } from "../data/Jwt.js";
+
+// Sparar info om användaren
+interface AuthRequest extends Request {
+  user: { userId: string } | null;
+}
+
+// Kollar om användaren är inloggad
+export const checkLogin = (req: AuthRequest, res: Response, next: NextFunction) => {
+  const authHeader = req.headers.authorization; // Hämtar token från headers
+
+  if (!authHeader) {
+    req.user = null; // inte inloggad
+    return next(); 
+  }
+
+// Hämtar och plockar ut token för att verifiera användaren
+    const token = authHeader.split(" ")[1];
+
+// Om ingen tonken finns = blir man gäst
+  if (!token) {
+    req.user = null;
+    return res.sendStatus(404); // Returnera 404 om token saknas
+  }
+
+  try {
+    // Kolla att token är giltig
+
+    // TODO: fixa payload
+    const payload = verifyToken(token); 
+    // req.user = { userId: payload.userId };
+    
+  } catch {
+    // Om token är ogiltig = gäst
+    req.user = null;
+  }
+
+
+  next();
+};

@@ -4,7 +4,7 @@ import crypto from "crypto";
 import db, { myTable } from '../data/dynamoDb.js';
 import { userPostSchema } from '../data/types.js';
 import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
-import { createToken } from '../data/auth.js';
+import { createToken } from '../data/Jwt.js';
 
 const router = express.Router();
 

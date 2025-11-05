@@ -1,7 +1,6 @@
 import express, { response } from 'express';
 import db, { myTable } from '../data/dynamoDb.js'
 import {  ScanCommand } from '@aws-sdk/lib-dynamodb';
-import { error } from 'console';
 
 
 const router = express.Router();
@@ -34,6 +33,10 @@ try {
 // TODO: Ev sortera/filtera kanaler 
 })
 
+
+
+
+
 // GET id - Hämta meddelanden i en kanal
 
 router.get('/api/channels/:channelId/messages', async (req, res) => {
@@ -51,6 +54,10 @@ router.get('/api/channels/:channelId/messages', async (req, res) => {
 
 // TODO: Error message response 
 })
+
+
+
+
 
 
 

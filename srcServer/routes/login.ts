@@ -3,7 +3,7 @@ import db, { myTable } from '../data/dynamoDb.js'
 import { userPostSchema, userSchema } from '../data/types.js';
 import { QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { compare } from 'bcrypt';
-import { createToken } from '../data/auth.js';
+import { createToken } from '../data/Jwt.js';
 
 
 const router = express.Router();
