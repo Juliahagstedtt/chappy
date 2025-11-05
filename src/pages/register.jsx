@@ -6,6 +6,7 @@ function Register () {
 const [username, SetUsername] = useState("");
 const [password, SetPassword] = useState("");
 const [message, setMessage] = useState("");
+const [token, setToken] = useState(null);
 
 async function handleRegister() {
     try {
@@ -18,14 +19,38 @@ async function handleRegister() {
         const data = await res.json();
             if (res.ok) {
                 setMessage(data.message || "Användare skapad!");
+                setToken(data.token);
             } else {
-                setMessage(data.message || "Något gick fel vid registrering.");
+                setMessage(data.message || data.error || "Något gick fel vid registrering.");
             }
             console.log("Användare skapad");
     } catch (err) {
         console.error("Fel vid registrering", err);
     }
 }
+
+
+async function handleLogin() {
+    try {
+        const res = await fetch("http://localhost:10000/api/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ username, password }),
+        });
+
+        const data = await res.json();
+            if (res.ok) {
+                setMessage(data.message || "Inloggning lyckades!");
+                navigate("/loggedin", { state: { username } });
+            } else {
+                setMessage(data.message || data.error || "Något gick fel vid inloggningen.");
+            }
+            console.log("Användare inloggad");
+    } catch (err) {
+        console.error("Fel vid inloggning", err);
+    }
+}
+
 
 return (
 <div className="register-container">
@@ -48,8 +73,10 @@ return (
 
     <div className="Reg-buttons">
         <button className="register" onClick={handleRegister}>Register</button>
+        <p className="message">{message}</p>
 
-        <button className="login">Login</button>
+
+        <button className="login" onClick={handleLogin}>Login</button>
     </div>
 </div>
 
