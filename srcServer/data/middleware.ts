@@ -2,7 +2,7 @@ import type { Request, Response, NextFunction } from "express";
 import { verifyToken } from "../data/Jwt.js";
 
 // Sparar info om användaren
-interface AuthRequest extends Request {
+export interface AuthRequest extends Request {
   user: { userId: string } | null;
 }
 
@@ -21,7 +21,7 @@ export const checkLogin = (req: AuthRequest, res: Response, next: NextFunction) 
 // Om ingen tonken finns = blir man gäst
   if (!token) {
     req.user = null;
-    return res.sendStatus(404); // Returnera 404 om token saknas
+    return res.sendStatus(401); // Returnera 401 om token saknas
   }
 
   try {
@@ -29,7 +29,7 @@ export const checkLogin = (req: AuthRequest, res: Response, next: NextFunction) 
 
     // TODO: fixa payload
     const payload = verifyToken(token); 
-    // req.user = { userId: payload.userId };
+    req.user = { userId: payload.userId };
     
   } catch {
     // Om token är ogiltig = gäst

@@ -1,5 +1,6 @@
 import jwt from 'jsonwebtoken'
-import { string } from 'zod'
+import { string, success } from 'zod'
+import { payloadSchema, type Payload } from './types.js'
 
 // Secret används för att skapa och verifiera jwt
 const Secret: string = process.env.JWT_SECRET || 'hemlig-dumlechoklad-3215'
@@ -13,14 +14,18 @@ export function createToken(userId: string) {
 // Verifierar en jwt och returnerar payload
 export function verifyToken(token: string) {
     // Kontrollera att token är giltig
-    const payload = jwt.verify(token, Secret)
+    // const payload: Payload = jwt.verify(token, Secret) as Payload // TODO byt ut mot zod
+    const payload = jwt.verify(token, Secret);
+
+    const parsed = payloadSchema.safeParse(payload);
+
 
     // Om payload inte är ett objekt eller null är token ogiltig
-    if(typeof payload !== 'object' || payload === null) {
+    if(!parsed.success) {
         throw new Error('Ogiltig token')
     }
     
 
     // returnerar payload, innehåller info om användaren
-    return token
+    return parsed.data;
 }

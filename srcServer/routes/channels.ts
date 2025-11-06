@@ -1,6 +1,8 @@
-import express, { response } from 'express';
+import express from 'express';
+import type { Request, Response } from 'express'; 
 import db, { myTable } from '../data/dynamoDb.js'
 import {  ScanCommand } from '@aws-sdk/lib-dynamodb';
+import type { AuthRequest } from '../data/middleware.js';
 
 
 const router = express.Router();
@@ -8,29 +10,31 @@ const router = express.Router();
 
 // GET - Hämta alla kanaler (öppna + låsta)
 
-router.get('/api/channels', async (req, res) => {
-
-// TODO: Hämta alla kanaler från DB
-try {
-    const data = await db.send(new ScanCommand({ 
-        TableName: "channel" 
-    }));
-
-    res.send(data.Items);
-
-
-} catch (err) {
-    res.status(500).send({ error: "Fel vid hämtning av kanal" });
+export interface AuthRequest extends Request {
+  user: { userId: string } | null;
 }
 
 
-// TODO: Filtrera baserat på behörighet:
-//          Om kanalen är låst kontrollera om man är inloggad
-//          Gäster kan bara se öppna kanaler
+router.get('/api/channels', async (req: AuthRequest, res: Response) => {
+    try {
+        const data = await db.send(new ScanCommand({ 
+            TableName: "channel" 
+        }));
+        
+    const channels = data.Items || [];
+    
+    const filtered = channels.filter(channel => {
+        if(channel.locked === true) {
+            return req.user !== null;
+        }
+        return true;
+    });
 
-// TODO: Returnera resultatet
+    return res.send(filtered);
 
-// TODO: Ev sortera/filtera kanaler 
+    } catch (err) {
+        res.status(500).send({ error: "Fel vid hämtning av kanal" });
+    }
 })
 
 

@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import type { checkLogin } from '../data/middleware.js'
+import { checkLogin } from '../data/middleware'
 import userRoute from './routes/Register.js'
 import loginRoute from './routes/Login.js'
 import channelRoute from './routes/Channels.js'
@@ -16,13 +16,11 @@ app.use(express.json())
 
 app.use(express.static("./dist/"));
 
+app.use(checkLogin);
 app.use('/api/users', userRoute)
 app.use('/api/login', loginRoute)
 app.use('/api/channels', channelRoute)
 app.use('/api/messages', messageRoute)
-app.use(checkLogin)
-
-
 
 
 
