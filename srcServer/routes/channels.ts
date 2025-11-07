@@ -1,41 +1,60 @@
 import express from 'express';
 import type { Request, Response } from 'express'; 
-import db, { myTable } from '../data/dynamoDb.js'
+import db, { myTable } from '../data/dynamoDb.js';
 import {  ScanCommand } from '@aws-sdk/lib-dynamodb';
-import type { AuthRequest } from '../data/middleware.js';
+// import type { AuthRequest } from '../data/middleware.js';
+import { verifyToken } from "../data/Jwt.js";
 
 
 const router = express.Router();
 
 
-// GET - Hämta alla kanaler (öppna + låsta)
-
-export interface AuthRequest extends Request {
-  user: { userId: string } | null;
+interface Payload {
+  userId: string;
 }
 
 
-router.get('/api/channels', async (req: AuthRequest, res: Response) => {
-    try {
-        const data = await db.send(new ScanCommand({ 
-            TableName: "channel" 
-        }));
-        
-    const channels = data.Items || [];
-    
-    const filtered = channels.filter(channel => {
-        if(channel.locked === true) {
-            return req.user !== null;
-        }
-        return true;
-    });
+function validateJwt(authHeader?: string): Payload | null {
+    if (!authHeader) return null;
+    const token = authHeader.split(' ')[1] ?? '';
+    if (!token) return null;
 
-    return res.send(filtered);
+    try {
+        const payload = verifyToken(token);
+        return { userId: payload.userId };
+    } catch {
+        return null;
+    }
+}
+
+// GET - Hämta alla kanaler (öppna + låsta)
+
+router.get('/', async (req: Request, res: Response) => {
+    try {
+        const payload = validateJwt(req.headers.authorization);
+        const isLoggedIn = payload !== null;
+
+        const data = await db.send(new ScanCommand({ TableName: 'chappy' }));
+
+        // 1. Ta bara kanalrader
+        const channels = (data.Items || []).filter(item => {
+            return item.Pk?.startsWith("CHANNEL#") && item.Sk === "INFO";
+        });
+
+        // 2. Filtrera låsta
+        const filtered = channels.filter(channel => {
+            if (channel.isLocked === true) {
+                return isLoggedIn;
+            }
+            return true;
+        });
+
+        res.send(filtered);
 
     } catch (err) {
         res.status(500).send({ error: "Fel vid hämtning av kanal" });
     }
-})
+    })
 
 
 
@@ -43,7 +62,7 @@ router.get('/api/channels', async (req: AuthRequest, res: Response) => {
 
 // GET id - Hämta meddelanden i en kanal
 
-router.get('/api/channels/:channelId/messages', async (req, res) => {
+router.get('/:channelId/messages', async (req: Request, res: Response) => {
 // TODO: Hämta kanalens id från url param
 
 // TODO: Kolla så kanalen finns annars returnera 404
@@ -66,7 +85,7 @@ router.get('/api/channels/:channelId/messages', async (req, res) => {
 
 
 // POST id - Skicka meddelande till kanal
-router.post('/api/channels/:channelId/messages', async (req, res) => {
+router.post('/:channelId/messages', async (req: Request, res: Response) => {
 
 // TODO: hämta Kanalens id från url param
 

@@ -1,10 +1,16 @@
-import type { Request, Response, NextFunction } from "express";
+import type { Request, Response, NextFunction, RequestHandler } from "express";
 import { verifyToken } from "../data/Jwt.js";
 
 // Sparar info om användaren
 export interface AuthRequest extends Request {
   user: { userId: string } | null;
 }
+
+// Logger
+const logger: RequestHandler = (req, _res, next) => {
+  console.log(`${req.method}  ${req.url}`);
+  next();
+};
 
 // Kollar om användaren är inloggad
 export const checkLogin = (req: AuthRequest, res: Response, next: NextFunction) => {
