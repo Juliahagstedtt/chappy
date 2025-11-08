@@ -4,9 +4,16 @@ import db, { myTable } from '../data/dynamoDb.js'
 
 const router = express.Router();
 
-// Endpoint POST - registrera ny användare, hasha ett lösenord som sparas
+// GET /api/channels/:channelId/messages
+router.get('/', async (req, res) => {
 
-router.post('/register', async (req, res) => {
+
+    
+})
+
+
+// POST /api/channels/:channelId/messages
+router.post('/', async (req, res) => {
 
 
     

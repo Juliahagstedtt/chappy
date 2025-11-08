@@ -4,8 +4,14 @@ import db, { myTable } from '../data/dynamoDb.js'
 
 const router = express.Router();
 
-// Endpoint POST - Skicka direktmeddelande (DM)
+// api/messages/dm/:otherUserId
+router.get('/', async (req, res) => {
+    
+})
 
+
+
+// Endpoint POST - Skicka direktmeddelande (DM)
 router.post('/dm', async (req, res) => {
 
 

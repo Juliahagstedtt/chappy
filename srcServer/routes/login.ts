@@ -1,7 +1,7 @@
 import express from 'express';
 import db, { myTable } from '../data/dynamoDb.js'
 import { userPostSchema, userSchema } from '../data/types.js';
-import { QueryCommand, ScanCommand } from "@aws-sdk/lib-dynamodb";
+import { ScanCommand } from "@aws-sdk/lib-dynamodb";
 import { compare } from 'bcrypt';
 import { createToken } from '../data/Jwt.js';
 
@@ -13,7 +13,7 @@ router.post('/', async (req, res) => {
     const parsed = userPostSchema.safeParse(req.body);
 
     if (!parsed.success) {
-        return res.status(400).send({ error: "Ogitligt information" });
+        return res.status(400).send({ error: "Ogiltigt information" });
     }
 
     const { username, password } = parsed.data;
@@ -28,7 +28,6 @@ router.post('/', async (req, res) => {
         });
         
     const result = await db.send(command);
-    console.log(result.Items);
 
     if (!result.Items || result.Items.length === 0) {
         return res.status(404).send({ error: "Användaren finns inte" });
@@ -40,14 +39,17 @@ router.post('/', async (req, res) => {
     const match = await compare(password, user.password);
     if (!match) return res.status(401).send({ error: "Fel lösenord" });
 
+
+    const uuid = user.Pk.startsWith('USER#') ? user.Pk.substring(5) : user.Pk
+
     // TODO: skapa jwt token
-    const token = createToken(user.Pk);
+    const token = createToken(uuid);
 
     // TODO: skicka tillbaka succsess response
     res.status(200).send({
         success: true,
         message: "Inloggningen lyckades",
-        userId: user.Pk,
+        userId: uuid,
         token
     });
 

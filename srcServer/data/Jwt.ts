@@ -1,5 +1,4 @@
 import jwt from 'jsonwebtoken'
-import { string, success } from 'zod'
 import { payloadSchema, type Payload } from './types.js'
 
 // Secret används för att skapa och verifiera jwt
