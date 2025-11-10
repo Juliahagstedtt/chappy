@@ -1,17 +1,22 @@
 import { useState } from "react";
-import '../styles/Home.css';
+import "../styles/Home.css";
 
+const LS_KEY = "jwt";
 
-function Home () {
+function Home() {
+  const jwt = localStorage.getItem(LS_KEY);
 
-return (
-<div> 
-        <div className="home-container">
-            <p>Empty</p>
-        </div>
-</div>
+  return (
+    <div className="home-container">
+      <h1>Välkommen till Chappy!</h1>
 
-    );
+      {jwt ? (
+        <p>Du är inloggad</p>
+      ) : (
+        <p>Du är gäst</p>
+      )}
+    </div>
+  );
 }
 
 export default Home;

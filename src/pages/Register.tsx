@@ -2,12 +2,13 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import '../styles/Register.css';
 
+const LS_KEY = "jwt";
+const LS_USERID = "userId";
 
 function Register () {
 const [username, SetUsername] = useState("");
 const [password, SetPassword] = useState("");
 const [message, setMessage] = useState("");
-const [token, setToken] = useState(null);
 
 const navigate = useNavigate(); 
 
@@ -20,17 +21,20 @@ async function handleRegister() {
         });
 
         const data = await res.json();
-            if (res.ok) {
-                setMessage(data.message || "Användare skapad!");
-                setToken(data.token);
-            } else {
-                setMessage(data.message || data.error || "Något gick fel vid registrering.");
-            }
-            console.log("Användare skapad");
+        if (res.ok && data.success && data.token && data.userId) {
+        localStorage.setItem(LS_KEY, data.token);
+        localStorage.setItem(LS_USERID, data.userId);
+
+        setMessage(data.message || "Användare skapad!");
+        navigate("/loggedin", { state: { username } });
+        } else {
+        setMessage(data.message || data.error || "Något gick fel vid registrering.");
+        }
     } catch (err) {
         console.error("Fel vid registrering", err);
+        setMessage("Tekniskt fel vid registrering.");
     }
-}
+    }
 
 
 async function handleLogin() {
@@ -42,17 +46,22 @@ async function handleLogin() {
         });
 
         const data = await res.json();
-            if (res.ok) {
-                setMessage(data.message || "Inloggning lyckades!");
-                navigate("/loggedin", { state: { username } });
-            } else {
-                setMessage(data.message || data.error || "Något gick fel vid inloggningen.");
-            }
-            console.log("Användare inloggad");
+        if (res.ok && data.success && data.token && data.userId) {
+
+        localStorage.setItem(LS_KEY, data.token);
+        localStorage.setItem(LS_USERID, data.userId);
+        localStorage.setItem("username", data.username);
+
+        setMessage(data.message || "Inloggning lyckades!");
+        navigate("/loggedin", { state: { username } });
+        } else {
+        setMessage(data.message || data.error || "Något gick fel vid inloggningen.");
+        }
     } catch (err) {
         console.error("Fel vid inloggning", err);
+        setMessage("Tekniskt fel vid inloggning.");
     }
-}
+    }
 
 
 return (

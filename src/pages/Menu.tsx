@@ -10,7 +10,7 @@ const [channels, SetChannels] = useState([]);
 
 // DM
 useEffect(() => {
-    fetch('http://localhost:5173/api/users')
+    fetch('http://localhost:5173/api/dm')
     .then(res => res.json())
     .then(data => setUsers(data))
     .catch(err => console.error(err));
@@ -29,19 +29,20 @@ return (
 <div className="menu-container">
       <h1>Channel</h1>
       <h1>DM's</h1>
-      {/* {users.map(user => (
+      {users.map(user => (
         <p key={user.Pk} className="menu-text">{user.username}</p>
-      ))} */}
+      ))}
 
       <h1>Kanaler</h1>
-      {/* {channels.map(channel => (
-        <p key={channel.Pk} className="menu-text">{channel.name}</p>
-      ))} */}
-      <p className="menu-text">chetas</p>
-      <p className="menu-text">taco-masters</p>
-      <p className="menu-text">potter-squad</p>
-      <p className="menu-text">bookDorks</p>
-
+        <ul>
+          {channels.map((c) => (
+            <li key={c.Pk}>
+              <button onClick={() => setActivePk(c.Pk)}>
+                {c.isLocked ? "låst" : "öppen"} {c.name || c.Pk}
+              </button>
+            </li>
+          ))}
+        </ul>
 </div>
     );
 }

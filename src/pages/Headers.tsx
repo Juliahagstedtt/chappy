@@ -1,28 +1,41 @@
-import { NavLink, Link } from 'react-router-dom';
-import logo from '../assets/logo.png';
-import '../styles/Headers.css';
+import { Link } from "react-router-dom";
+import logo from "../assets/logo.png";
+import "../styles/Headers.css";
 
+const LS_KEY = "jwt";
 
-function Headers () {
+export default function Headers() {
+  const jwt = localStorage.getItem(LS_KEY);
 
+  function logout() {
+    localStorage.removeItem(LS_KEY);
+    location.reload();
+  }
 
-
-return (
-    <header className='head-menu'>
-      <nav className="links">
-        <Link to="/">
-          <button className="logo">
-            <img src={logo} alt="logo" className="chappy" />
-          </button>
+  return (
+    <header>
+      <nav>
+        <Link to="/" className="logo">
+          <img src={logo} alt="logo" className="chappy" />
         </Link>
 
-        <button>
-          <NavLink to="/register">Registrera</NavLink>
-        </button>
+        {" "}
+        <Link to="/channel">Kanaler</Link> |{" "}
+        <Link to="/dm">DM</Link> | <Link to="/register">Register</Link>
       </nav>
+
+      <div>
+        {jwt ? (
+          <>
+            Inloggad{" "}
+            <button type="button" onClick={logout}>
+              Logga ut
+            </button>
+          </>
+        ) : (
+          <>Gäst</>
+        )}
+      </div>
     </header>
-
-);
+  );
 }
-
-export default Headers;

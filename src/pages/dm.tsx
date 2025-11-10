@@ -3,20 +3,20 @@ import { useState, useEffect } from "react";
 
 const LS_KEY = "jwt";
 
-function Channel() {
-  const [channels, setChannels] = useState([]);
+function Dm() {
+  const [dm, setDm] = useState([]);
   const [activePk, setActivePk] = useState("");
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
 
-  const channelIdFromPk = (pk) =>
-    pk && pk.startsWith("CHANNEL#") ? pk.slice(8) : pk || "";
+  const dmIdFromPk = (pk) =>
+    pk && pk.startsWith("DM#") ? pk.slice(8) : pk || "";
 
   useEffect(() => {
     (async () => {
-      const res = await fetch("/api/channels");
+      const res = await fetch("/api/dm");
       const data = await res.json();
-      setChannels(data);
+      setDm(data);
       if (data.length > 0) setActivePk(data[0].Pk);
     })();
   }, []);
@@ -24,21 +24,21 @@ function Channel() {
   useEffect(() => {
     if (!activePk) return;
     (async () => {
-      const id = channelIdFromPk(activePk);
+      const id = dmIdFromPk(activePk);
       const jwt = localStorage.getItem(LS_KEY);
       const headers = jwt ? { Authorization: `Bearer ${jwt}` } : {};
-      const res = await fetch(`/api/channels/${id}/messages`, { headers });
+      const res = await fetch(`/api/dm/${id}/messages`, { headers });
       setMessages(res.ok ? await res.json() : []);
     })();
   }, [activePk]);
 
   async function sendMessage() {
     if (!activePk || !text.trim()) return;
-    const id = channelIdFromPk(activePk);
+    const id = dmIdFromPk(activePk);
     const jwt = localStorage.getItem(LS_KEY);
     const headers = { "Content-Type": "application/json" };
     if (jwt) headers.Authorization = `Bearer ${jwt}`;
-    const res = await fetch(`/api/channels/${id}/messages`, {
+    const res = await fetch(`/api/dm/${id}/messages`, {
       method: "POST",
       headers,
       body: JSON.stringify({ text }),
@@ -46,7 +46,7 @@ function Channel() {
     if (res.ok) {
       setText("");
       // hämta om messages kort och gott
-      const res2 = await fetch(`/api/channels/${id}/messages`, { headers });
+      const res2 = await fetch(`/api/dm/${id}/messages`, { headers });
       setMessages(res2.ok ? await res2.json() : []);
     }
   }
@@ -54,9 +54,9 @@ function Channel() {
   return (
     <div style={{ display: "flex", gap: 16 }}>
       <aside>
-        <h3>Kanaler</h3>
+        <h3>Dm</h3>
         <ul>
-          {channels.map((c) => (
+          {dm.map((c) => (
             <li key={c.Pk}>
               <button onClick={() => setActivePk(c.Pk)}>
                 {c.isLocked ? "låst" : "öppen"} {c.name || c.Pk}
@@ -99,4 +99,4 @@ function Channel() {
   );
 }
 
-export default Channel;
+export default Dm;

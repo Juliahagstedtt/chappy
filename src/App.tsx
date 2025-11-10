@@ -7,6 +7,7 @@ import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import LoggedIn from "./pages/LoggedIn";
 import Channels from "./pages/Channels";
+import Dm from "./pages/dm";
 
 
 function App() {
@@ -19,17 +20,9 @@ function App() {
         <Route path="/menu" element={<Menu />} />
         <Route path="/loggedin" element={<LoggedIn />} />
         <Route path="/channel" element={<Channels />} />
-
+        <Route path="/dm" element={<Dm />} />
 
       </Routes>
-
-      <nav>
-        <NavLink to="/menu">Menu</NavLink>
-        <NavLink to="/loggedin">Login</NavLink>
-        <NavLink to="/channel">Channel</NavLink>
-      </nav>
-
-
     </>
   );
 }
