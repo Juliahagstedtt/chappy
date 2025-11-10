@@ -12,10 +12,6 @@ export const userSchema = z.object({
     username: z.string()
 })
 
-export interface Payload {
-    userId: string;
-}
-
 export const payloadSchema = z.object({
   userId: z.string(),
 });

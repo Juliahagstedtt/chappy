@@ -19,7 +19,14 @@ router.get('/', async (req, res) => {
         });
 
         const result = await db.send(command);
-        res.status(200).send(result.Items);
+
+        const users = (result.Items || []).map(item => ({
+            username: item.username,
+            userId: item.Pk.replace("USER#", "")
+        }));
+
+        res.status(200).send(users);
+
     } catch (error) {
         console.error("Fel vid hämning av användare", error);
         res.status(500).send({ error: "kunde inte hämta användaren" });

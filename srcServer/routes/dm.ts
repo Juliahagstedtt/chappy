@@ -3,8 +3,6 @@ import type { Request, Response } from 'express';
 import db, { myTable } from '../data/dynamoDb.js'
 import { PutCommand, QueryCommand } from "@aws-sdk/lib-dynamodb";
 import jwt from 'jsonwebtoken'
-import { z } from 'zod';
-
 
 const router = express.Router();
 
@@ -106,8 +104,6 @@ router.post('/:otherUserId/messages', async (
       await db.send(cmd)
       res.sendStatus(201)
     } catch (error) {
-        const msg = (error as { message?: string }).message || "Okänt fel";
-        console.log("DM ERROR:", msg);
         res.status(500).send({ error: "Fel vid sparning av DM" });
     }
     
