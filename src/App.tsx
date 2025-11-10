@@ -6,6 +6,8 @@ import Register from "./pages/Register";
 import Home from "./pages/Home";
 import Menu from "./pages/Menu";
 import LoggedIn from "./pages/LoggedIn";
+import Channels from "./pages/Channels";
+
 
 function App() {
   return (
@@ -16,16 +18,15 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/menu" element={<Menu />} />
         <Route path="/loggedin" element={<LoggedIn />} />
+        <Route path="/channel" element={<Channels />} />
 
 
       </Routes>
 
       <nav>
-        <NavLink to="/"></NavLink>
-        <NavLink to="/Menu">Menu</NavLink>
-        <NavLink to="/LoggedIn">Login</NavLink>
-
-        {/* <NavLink to="/register">Register</NavLink> */}
+        <NavLink to="/menu">Menu</NavLink>
+        <NavLink to="/loggedin">Login</NavLink>
+        <NavLink to="/channel">Channel</NavLink>
       </nav>
 
 

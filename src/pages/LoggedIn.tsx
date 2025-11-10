@@ -1,10 +1,10 @@
 import React from 'react';
 
-function LoggedIn({ username }) {
+function LoggedIn() {
   return (
     <div>
       <h1>Inloggad!</h1>
-      <p>Välkommen, {username}!</p>
+      <p>Välkommen</p>
     </div>
   );
 }

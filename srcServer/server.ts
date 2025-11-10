@@ -4,6 +4,7 @@ import { checkLogin } from './data/middleware.js'
 import userRoute from './routes/Register.js'
 import loginRoute from './routes/login.js'
 import channelRoute from './routes/Channel.js'
+import dmRoute from './routes/dm.js'
 
 
 const app = express();
@@ -19,6 +20,7 @@ app.use(express.static("./dist/"));
 app.use('/api/users', userRoute)
 app.use('/api/login', loginRoute)
 app.use('/api/channels', channelRoute)
+app.use('/api/dm', dmRoute)
 
 
 

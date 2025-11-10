@@ -36,12 +36,10 @@ router.get('/', async (req: Request, res: Response) => {
 
         const data = await db.send(new ScanCommand({ TableName: myTable }));
 
-        // 1. Ta bara kanalrader
         const channels = (data.Items || []).filter(item => {
             return item.Pk?.startsWith("CHANNEL#") && item.Sk === "INFO";
         });
 
-        // 2. Filtrera låsta
         const filtered = channels.filter(channel => {
             if (channel.isLocked === true) {
                 return isLoggedIn;
