@@ -18,8 +18,7 @@ router.post('/', async (req, res) => {
 
     const { username, password } = parsed.data;
 
-
-  
+    // hämtar 
         const command = new ScanCommand({
             TableName: myTable,
             FilterExpression: "#n = :username",
@@ -50,6 +49,7 @@ router.post('/', async (req, res) => {
         success: true,
         message: "Inloggningen lyckades",
         userId: user.username,
+        username: user.username,
         token
     });
 

@@ -1,20 +1,18 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
 import "../styles/Home.css";
 
-const LS_KEY = "jwt";
-
 function Home() {
-  const jwt = localStorage.getItem(LS_KEY);
-
+ 
   return (
     <div className="home-container">
-      <h1>Välkommen till Chappy!</h1>
-
-      {jwt ? (
-        <p>Du är inloggad</p>
-      ) : (
-        <p>Du är gäst</p>
-      )}
+    <nav className="link">
+        <Link to="/channel"> Kanaler |</Link>
+        <Link to="/dm"> DM |</Link> 
+        <Link to="/register"> Registrera | Logga In</Link>
+    </nav>      
+    
+    
+    <h1>Välkommen till Chappy!</h1>
     </div>
   );
 }

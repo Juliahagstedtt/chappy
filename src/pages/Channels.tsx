@@ -1,102 +1,127 @@
 import { useState, useEffect } from "react";
+import type { ChannelItem, ChannelMessage } from "../helpers/types";
 
 
-const LS_KEY = "jwt";
-
-function Channel() {
+function Channel () {
   const [channels, setChannels] = useState([]);
-  const [activePk, setActivePk] = useState("");
+  const [chosenChannel, setChosenChannel] = useState("");
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
 
-  const channelIdFromPk = (pk) =>
-    pk && pk.startsWith("CHANNEL#") ? pk.slice(8) : pk || "";
+  const jwt = localStorage.getItem("jwt");
+
+  function channelIdFromPk(pk: string) {
+    return pk && pk.startsWith("CHANNEL#") ? pk.slice(8) : pk;
+  }
 
   useEffect(() => {
-    (async () => {
-      const res = await fetch("/api/channels");
-      const data = await res.json();
-      setChannels(data);
-      if (data.length > 0) setActivePk(data[0].Pk);
-    })();
+    async function loadChannels() {
+    try {
+        const sendRes = await fetch("/api/channels");
+        const list = await sendRes.json();
+        
+    if (Array.isArray(list)) {
+        setChannels(list);
+    } else {
+        setMessages([]);
+    }
+
+    } catch {
+        setChannels([]);
+    }
+    }
+    loadChannels();
   }, []);
 
   useEffect(() => {
-    if (!activePk) return;
-    (async () => {
-      const id = channelIdFromPk(activePk);
-      const jwt = localStorage.getItem(LS_KEY);
-      const headers = jwt ? { Authorization: `Bearer ${jwt}` } : {};
-      const res = await fetch(`/api/channels/${id}/messages`, { headers });
-      setMessages(res.ok ? await res.json() : []);
-    })();
-  }, [activePk]);
+    if (!chosenChannel) return;
+    const id = channelIdFromPk(chosenChannel);
+    const headers: HeadersInit = jwt ? { Authorization: `Bearer ${jwt}` } : {};
+    async function loadMessages() {
+    try {
+        const sendRes = await fetch(`/api/channels/${id}/messages`, { headers });
+        const list = await sendRes.json();
+
+    if (Array.isArray(list)) {
+        setChannels(list);  
+    } else {
+    setMessages([]);
+    }
+        
+    } catch {
+    setMessages([]);
+    }
+
+    }
+    loadMessages();
+  }, [chosenChannel, jwt]);
 
   async function sendMessage() {
-    if (!activePk || !text.trim()) return;
-    const id = channelIdFromPk(activePk);
-    const jwt = localStorage.getItem(LS_KEY);
-    const headers = { "Content-Type": "application/json" };
-    if (jwt) headers.Authorization = `Bearer ${jwt}`;
-    const res = await fetch(`/api/channels/${id}/messages`, {
+    const bodyText = text.trim();
+    if (!chosenChannel || !bodyText) return;
+
+    const id = channelIdFromPk(chosenChannel);
+    const headers: HeadersInit = {
+      "Content-Type": "application/json",
+      ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
+    };
+
+    const sendRes = await fetch(`/api/channels/${id}/messages`, {
       method: "POST",
       headers,
-      body: JSON.stringify({ text }),
+      body: JSON.stringify({ text: bodyText }),
     });
-    if (res.ok) {
-      setText("");
-      // hämta om messages kort och gott
-      const res2 = await fetch(`/api/channels/${id}/messages`, { headers });
-      setMessages(res2.ok ? await res2.json() : []);
-    }
+    if (!sendRes.ok) return;
+
+    setText("");
+    const sendRes2 = await fetch(`/api/channels/${id}/messages`, {
+      headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
+    });
+    setMessages(sendRes2.ok ? await sendRes2.json() : []);
   }
 
   return (
-    <div style={{ display: "flex", gap: 16 }}>
-      <aside>
-        <h3>Kanaler</h3>
-        <ul>
-          {channels.map((c) => (
-            <li key={c.Pk}>
-              <button onClick={() => setActivePk(c.Pk)}>
-                {c.isLocked ? "låst" : "öppen"} {c.name || c.Pk}
-              </button>
-            </li>
-          ))}
-        </ul>
-      </aside>
+    <div>
+      <h2>Kanaler</h2>
 
-      <main style={{ flex: 1 }}>
-        {!activePk && <div>Välj en kanal.</div>}
-        {activePk && (
-          <>
-            <ul>
-              {messages.map((m) => (
-                <li key={m.Sk}>
-                  <small>
-                    {(m.senderName || m.senderId || "Okänd")} –{" "}
-                    {new Date(m.time).toLocaleString()}
-                  </small>
-                  <div>{m.text}</div>
-                </li>
-              ))}
-              {messages.length === 0 && <li>Inga meddelanden ännu.</li>}
-            </ul>
-            <div style={{ marginTop: 8 }}>
-              <textarea
-                rows={3}
-                value={text}
-                onChange={(e) => setText(e.target.value)}
-                placeholder="Skriv ett meddelande…"
-                style={{ width: "100%" }}
-              />
-              <button onClick={sendMessage}>Skicka</button>
+      <div>
+        {channels.map((c: any) => (
+          <div key={c.Pk}>
+            <button onClick={() => setChosenChannel(c.Pk)}>
+              {c.isLocked ? "Låst" : "Öppen"} {c.name || c.Pk}
+            </button>
+          </div>
+        ))}
+        {channels.length === 0 && <p>Inga kanaler</p>}
+      </div>
+
+      {!chosenChannel && <p>Ingen kanal vald</p>}
+
+      {chosenChannel && (
+        <div>
+          <h3>Meddelanden</h3>
+          {messages.map((m: any) => (
+            <div key={m.Sk}>
+              <div>
+                {(m.senderName || m.senderId || "Okänd")} –{" "}
+                {new Date(m.time).toLocaleString()}
+              </div>
+              <div>{m.text}</div>
             </div>
-          </>
-        )}
-      </main>
+          ))}
+          {messages.length === 0 && <p>Inga meddelanden ännu</p>}
+
+          <div>
+            <textarea
+              value={text}
+              onChange={(e) => setText(e.target.value)}
+              placeholder="Skriv…"
+            />
+            <button onClick={sendMessage}>Skicka</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
-
 export default Channel;

@@ -1,15 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "../styles/Headers.css";
+import { getUser, logoutUser } from "../helpers/frontAuth";
 
-const LS_KEY = "jwt";
 
 export default function Headers() {
-  const jwt = localStorage.getItem(LS_KEY);
+  const navigate = useNavigate();
+  const { token } = getUser();
 
-  function logout() {
-    localStorage.removeItem(LS_KEY);
-    location.reload();
+  function handleLogout() {
+     logoutUser(); 
+     navigate("/register"); 
   }
 
   return (
@@ -18,23 +19,14 @@ export default function Headers() {
         <Link to="/" className="logo">
           <img src={logo} alt="logo" className="chappy" />
         </Link>
-
-        {" "}
-        <Link to="/channel">Kanaler</Link> |{" "}
-        <Link to="/dm">DM</Link> | <Link to="/register">Register</Link>
       </nav>
 
       <div>
-        {jwt ? (
-          <>
-            Inloggad{" "}
-            <button type="button" onClick={logout}>
-              Logga ut
-            </button>
-          </>
-        ) : (
-          <>Gäst</>
-        )}
+      {token && (
+        <button type="button" onClick={handleLogout}>
+          Logga ut
+        </button>
+      )}
       </div>
     </header>
   );

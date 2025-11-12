@@ -61,6 +61,18 @@ router.post('/register', async (req, res) => {
         type: 'user',
     };
 
+        // Kolla om användarnamnet redan finns
+        const exists = await db.send(new ScanCommand({
+            TableName: myTable,
+            FilterExpression: "#u = :u",
+            ExpressionAttributeNames: { "#u": "username" },
+            ExpressionAttributeValues: { ":u": username }
+        }));
+
+        if ((exists.Items ?? []).length > 0) {
+            return res.status(409).send({ error: "Användarnamnet är upptaget" });
+        }
+
     // TODO: Spara användaren i DynamoDB
     try {
         const command = new PutCommand({
