@@ -3,13 +3,13 @@ import { useNavigate } from "react-router-dom";
 import { saveUser } from "../helpers/frontAuth";
 import '../styles/Register.css';
 
-function Register () {
+function Login () {
 const [username, setUsername] = useState("");
 const [password, setPassword] = useState("");
 const navigate = useNavigate(); 
 
-  async function handleRegister() {
-    const res = await fetch("/api/users/register", {
+  async function handleLogin() {
+    const res = await fetch("/api/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ username, password }),
@@ -23,29 +23,29 @@ const navigate = useNavigate();
 
 return (
 <div className="register-container">
-      <h1>Registrera</h1>
-      <p>username:</p>
+      <h1>Logga In</h1>
+      <p>användarnamn:</p>
       <input className="register-input"
       type="text"
-      placeholder="username"
+      placeholder="användarnamn"
       value={username}
       onChange={(e) => setUsername(e.target.value)}
       />
 
     <p>password:</p>
       <input className="register-input"
-      type="password"
-      placeholder="password"
+      type="Lösenord:"
+      placeholder="Lösenord"
       value={password}
       onChange={(e) => setPassword(e.target.value)}
       />
 
-    <div className="Reg-buttons">
-        <button className="register" onClick={handleRegister} disabled={!username || !password}>Register</button>
+    <div className="Reg-buttons">        
+        <button className="login" onClick={handleLogin} disabled={!username || !password}>Login</button>
     </div>
 </div>
 
     );
 }
 
-export default Register;
+export default Login;

@@ -1,15 +1,15 @@
-import { Link } from "react-router-dom";
+// import { Link } from "react-router-dom";
 import "../styles/Home.css";
 
 function Home() {
  
   return (
     <div className="home-container">
-    <nav className="link">
+    {/* <nav className="link">
         <Link to="/channel"> Kanaler |</Link>
         <Link to="/dm"> DM |</Link> 
         <Link to="/register"> Registrera | Logga In</Link>
-    </nav>      
+    </nav>       */}
     
     
     <h1>Välkommen till Chappy!</h1>

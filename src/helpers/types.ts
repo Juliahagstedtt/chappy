@@ -1,3 +1,5 @@
+import { z } from 'zod'
+
 // För frontend
 export type UserListItem = {
   userId: string;
@@ -11,7 +13,7 @@ export type ChannelItem = {
     isLocked?: boolean;
 }
 
-export interface Channel {
+export interface Channels {
   Pk: string;
   Sk: string;
   name?: string;
@@ -61,3 +63,21 @@ export type RegisterResponse = {
   userId: string;
   token: string;
 };
+
+export const UserListItemSchema = z.object({
+  userId: z.string(),
+  username: z.string(),
+});
+export const UserListSchema = z.array(UserListItemSchema); 
+
+export const DmMessageSchema = z.object({
+  Pk: z.string(),
+  Sk: z.string(),
+  text: z.string(),
+  time: z.string(),            
+  senderId: z.string().optional(),
+  receiverId: z.string(),
+  senderName: z.string().optional(),
+  type: z.literal("dmMessage"),
+});
+export const DmMessageListSchema = z.array(DmMessageSchema);

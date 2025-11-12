@@ -1,9 +1,9 @@
 import { useState, useEffect } from "react";
-import type { Channel, Message } from "../helpers/types";
+import type { Channels, Message } from "../helpers/types";
 
 
 function Channel () {
-  const [channels, setChannels] = useState<Channel[]>([]);  
+  const [channels, setChannels] = useState<Channels[]>([]);  
   const [messages, setMessages] = useState<Message[]>([]);
   const [chosenChannel, setChosenChannel] = useState("");
   const [text, setText] = useState("");
