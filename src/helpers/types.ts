@@ -11,6 +11,21 @@ export type ChannelItem = {
     isLocked?: boolean;
 }
 
+export interface Channel {
+  Pk: string;
+  Sk: string;
+  name?: string;
+  isLocked?: boolean;
+}
+
+export interface Message {
+  Sk: string;
+  time: string;
+  text: string;
+  senderName?: string;
+  senderId?: string;
+}
+
 export type ChannelMessage = {
     Pk: string,
     Sk: string,

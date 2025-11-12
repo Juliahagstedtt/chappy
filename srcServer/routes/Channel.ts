@@ -38,7 +38,7 @@ router.get('/', async (req: Request, res: Response) => {
         const data = await db.send(new ScanCommand({ TableName: myTable }));
 
         // filterar bort allt som inte är kanal info
-        // alla kanaler som har Pk börjar med CHANNEL# och Sk med INFO (TODO: Ändra INFO!)
+        // alla kanaler som har Pk börjar med CHANNEL# och Sk med INFO
         const channels = (data.Items || []).filter(item => {
             return item.Pk?.startsWith("CHANNEL#") && item.Sk === "INFO";
         });

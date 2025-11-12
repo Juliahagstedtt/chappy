@@ -1,11 +1,11 @@
 import { useState, useEffect } from "react";
-import type { ChannelItem, ChannelMessage } from "../helpers/types";
+import type { Channel, Message } from "../helpers/types";
 
 
 function Channel () {
-  const [channels, setChannels] = useState([]);
+  const [channels, setChannels] = useState<Channel[]>([]);  
+  const [messages, setMessages] = useState<Message[]>([]);
   const [chosenChannel, setChosenChannel] = useState("");
-  const [messages, setMessages] = useState([]);
   const [text, setText] = useState("");
 
   const jwt = localStorage.getItem("jwt");
@@ -37,15 +37,18 @@ function Channel () {
     if (!chosenChannel) return;
     const id = channelIdFromPk(chosenChannel);
     const headers: HeadersInit = jwt ? { Authorization: `Bearer ${jwt}` } : {};
+
+
     async function loadMessages() {
     try {
         const sendRes = await fetch(`/api/channels/${id}/messages`, { headers });
         const list = await sendRes.json();
 
     if (Array.isArray(list)) {
-        setChannels(list);  
+        setMessages(list);  
+        
     } else {
-    setMessages([]);
+    setChannels([]);
     }
         
     } catch {
