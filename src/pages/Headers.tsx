@@ -14,43 +14,42 @@ export default function Headers() {
   }
 
   return (
-    <header>
+    <header className="head-menu">
       <nav>
         <Link to="/" className="logo">
           <img src={logo} alt="logo" className="chappy" />
         </Link>
-      </nav>
 
-      <div>
-          {!token && (
-          <>
-            <Link to="/register">
-              <button type="button">Registrera</button>
-            </Link>
-            <Link to="/login">
-              <button type="button">Logga in</button>
-            </Link>
-
-
-          </>
-        )}
-      </div>
-
-            <Link to="/dm">
-              <button type="button">DirektMeddelanden</button>
-            </Link>
-            <Link to="/channels">
-              <button type="button">Kanaler</button>
+        <div>
+          <Link to="/channel">
+            <button type="button">Kanaler</button>
           </Link>
 
+          {!token && (
+            <>
+              <Link to="/register">
+                <button type="button">Registrera</button>
+              </Link>
 
-      <div>
-      {token && (
-        <button type="button" onClick={handleLogout}>
-          Logga ut
-        </button>
-      )}
-      </div>
+              <Link to="/login">
+                <button type="button">Logga in</button>
+              </Link>
+            </>
+          )}
+
+          {token && (
+            <>
+              <Link to="/dm">
+                <button type="button">DirektMeddelanden</button>
+              </Link>
+
+              <button type="button" onClick={handleLogout}>
+                Logga ut
+              </button>
+            </>
+          )}
+        </div>
+      </nav>
     </header>
   );
 }
