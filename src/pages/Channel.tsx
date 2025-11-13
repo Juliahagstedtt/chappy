@@ -87,6 +87,12 @@ function Channel () {
     <div>
       <h2>Kanaler</h2>
 
+      <button>Nytt +</button>
+<div>
+  
+</div>
+
+
       <div>
         {channels.map((c: any) => (
           <div key={c.Pk}>

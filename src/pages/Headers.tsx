@@ -43,6 +43,7 @@ export default function Headers() {
                 <button type="button">DirektMeddelanden</button>
               </Link>
 
+              <button>Ta bort konto</button>
               <button type="button" onClick={handleLogout}>
                 Logga ut
               </button>

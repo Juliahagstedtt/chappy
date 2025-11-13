@@ -3,8 +3,11 @@ import { genSalt, hash } from "bcrypt";
 import crypto from "crypto";
 import db, { myTable } from '../data/dynamoDb.js';
 import { userPostSchema } from '../data/types.js';
-import { PutCommand, ScanCommand } from '@aws-sdk/lib-dynamodb';
+import { PutCommand, ScanCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 import { createToken } from '../data/Jwt.js';
+import { checkLogin } from '../data/middleware.js';
+import type { AuthRequest } from "../data/middleware.js";
+
 
 const router = express.Router();
 
@@ -99,5 +102,35 @@ router.post('/register', async (req, res) => {
     }
 
 });
+
+
+router.delete("/:id", checkLogin, async (req: AuthRequest, res) => {
+  try {
+    if (!req.user) {
+      return res.status(401).send({ error: "Du måste vara inloggad." });
+    }
+
+    const id = req.params.id;
+
+    if (id !== req.user.userId) {
+      return res.status(403).send({ error: "Du kan bara ta bort ditt eget konto." });
+    }
+
+    const pk = `USER#${id}`;
+
+    const command = new DeleteCommand({
+      TableName: myTable,
+      Key: { Pk: pk },
+    });
+
+    await db.send(command);
+
+    return res.sendStatus(204);
+  } catch (err) {
+    console.error("Fel vid borttagning av användare:", err);
+    return res.status(500).send({ error: "Något gick fel vid borttagning av användare." });
+  }
+});
+
 
 export default router;

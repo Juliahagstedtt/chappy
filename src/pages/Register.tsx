@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveUser } from "../helpers/frontAuth";
-import '../styles/Register.css';
+import '../styles/RegisterLogin.css';
 
 function Register () {
 const [username, setUsername] = useState("");

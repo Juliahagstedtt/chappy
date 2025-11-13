@@ -10,7 +10,7 @@
 
 .head-menu nav {
     width: 100%;
-    max-width: 1500px;
+    max-width: 1100px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -23,22 +23,33 @@
     padding: 0;
     cursor: pointer;
 }
- 
+
+.logo img {
+    height: 45px;
+
+}
+
 .logo:hover {
     border: none;
+    filter: drop-shadow(0 0 2em #ff3b69);
+
+}
+
+.nav-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.nav-buttons, .status button {
+    padding: 8px 12px;
+    background: #FF3499;
+    border: none;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
 }
 
 .status {
     font-size: 14px;
-    color: #333;
-}
-
-.status button {
-    margin-left: 10px;
-    padding: 5px 10px;
-    background: #FF3499;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+    color: #86ff5d;
 }

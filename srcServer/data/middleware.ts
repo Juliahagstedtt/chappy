@@ -3,7 +3,8 @@ import { verifyToken } from "../data/Jwt.js";
 
 // Sparar info om användaren
 export interface AuthRequest extends Request {
-  user: { userId: string } | null;
+    user?: {
+    userId: string; } | null;
 }
 
 // Kollar om användaren är inloggad

@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { saveUser } from "../helpers/frontAuth";
-import '../styles/Register.css';
+import '../styles/RegisterLogin.css';
 
 function Login () {
   const [username, setUsername] = useState("");
@@ -41,7 +41,7 @@ function Login () {
   }
 
 return (
-<div className="register-container">
+<div className="login-container">
       <h1>Logga In</h1>
       <p>Användarnamn:</p>
       <input className="register-input"

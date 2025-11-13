@@ -1,30 +1,34 @@
-.register-container {
+.register-container, .login-container {
     /* background-color: #cdf6ec7c; */
-    height: 320px;
-    margin: 110px;
-    margin-top: 20px;
-    margin-bottom: 20px;
+  max-width: 320px;
+  margin: 40px auto;
+  padding: 24px 20px;
+  border-radius: 12px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
 }
 
-/* .register-input {
-    
-} */
+.register-container h1, .login-container h1 {
+  margin-bottom: 16px;
+  font-size: 24px;
+  text-align: center;
+}
 
-.register {
+.register, .login {
     background-color: #FF3499;
     color: white;
     border: none;
     padding: 10px;
     border-radius: 9px;
-    width: 100px;
+    width: 120px;
     cursor: pointer;
-    margin-bottom: 30px;
-    margin: 10px;
+    font-size: 14px;
+    margin-top: 20px;
 }
 
 .register:hover {
     background-color: #ff87c3;
-
 }
 
 .login:hover {
