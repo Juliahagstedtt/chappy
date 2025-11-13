@@ -13,6 +13,39 @@ export default function Headers() {
      navigate("/register"); 
   }
 
+  async function handleDeleteAccount() {
+  const { token, userId } = getUser();
+
+  if (!token || !userId) {
+    return;
+  }
+
+  try {
+    const res = await fetch(
+      `http://localhost:10000/api/users/${userId}`,
+      {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    if (res.status === 204) {
+      logoutUser();
+      navigate("/register");
+    } else {
+      console.error("Fel vid borttagning:", await res.json());
+    }
+  } catch (err) {
+    console.error("Nätverksfel:", err);
+  }
+}
+
+
+
+
+
   return (
     <header className="head-menu">
       <nav>
@@ -43,7 +76,7 @@ export default function Headers() {
                 <button type="button">DirektMeddelanden</button>
               </Link>
 
-              <button>Ta bort konto</button>
+              <button type="button" onClick={handleDeleteAccount}>Ta bort konto</button>
               <button type="button" onClick={handleLogout}>
                 Logga ut
               </button>

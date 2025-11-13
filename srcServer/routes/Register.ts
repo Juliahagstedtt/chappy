@@ -120,7 +120,10 @@ router.delete("/:id", checkLogin, async (req: AuthRequest, res) => {
 
     const command = new DeleteCommand({
       TableName: myTable,
-      Key: { Pk: pk },
+      Key: { 
+        Pk: pk,
+        Sk: "INFO",
+      },
     });
 
     await db.send(command);
