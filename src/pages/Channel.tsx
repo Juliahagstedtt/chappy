@@ -8,6 +8,9 @@ function Channel () {
   const [chosenChannel, setChosenChannel] = useState("");
   const [text, setText] = useState("");
 
+  const [newChannelName, setNewChannelName] = useState("");
+  const [newChannelLocked, setNewChannelLocked] = useState(false);
+
   const jwt = localStorage.getItem("jwt");
 
   function channelIdFromPk(pk: string) {
@@ -83,14 +86,76 @@ function Channel () {
     setMessages(sendRes2.ok ? await sendRes2.json() : []);
   }
 
+
+    async function createChannel() {
+    const name = newChannelName.trim();
+    if (!name || !jwt) return;
+    try {
+      const res = await fetch("/api/channels", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${jwt}`,
+        },
+        body: JSON.stringify({
+          name,
+          isLocked: newChannelLocked,
+        }),
+      });
+
+      if (!res.ok) {
+        console.error("Kunde inte skapa kanal");
+        return;
+      }
+
+      const data = await res.json(); 
+      setNewChannelName("");
+      setNewChannelLocked(false);
+
+      const sendRes = await fetch("/api/channels");
+      const list = await sendRes.json();
+      if (Array.isArray(list)) {
+        setChannels(list);
+      }
+
+      setChosenChannel(`CHANNEL#${data.channelId}`);
+    } catch (err) {
+      console.error("Fel vid skapande av kanal:", err);
+    }
+  }
+
+
+
+
   return (
     <div>
       <h2>Kanaler</h2>
 
-      <button>Nytt +</button>
-<div>
-  
-</div>
+      {jwt && (
+        <div className="create-channel-container">
+          <input
+          className="create-channel"
+            id="add-input"
+            type="text"
+            placeholder="Kanalnamn"
+            value={newChannelName}
+            onChange={(e) => setNewChannelName(e.target.value)}
+          />
+          <label>
+            <input
+              type="checkbox"
+              checked={newChannelLocked}
+              onChange={(e) => setNewChannelLocked(e.target.checked)}
+            />{" "}
+            Låst
+          </label>
+          <button
+            type="button"
+            onClick={createChannel}>
+            Skapa kanal
+          </button>
+        </div>
+      )}
 
 
       <div>

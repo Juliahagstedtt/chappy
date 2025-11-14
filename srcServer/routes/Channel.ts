@@ -3,7 +3,7 @@ import express from 'express';
 import type { Request, Response } from 'express'; 
 import db, { myTable } from '../data/dynamoDb.js';
 import { verifyToken } from "../data/Jwt.js";
-
+import crypto from "crypto";
 
 const router = express.Router();
 
@@ -192,5 +192,57 @@ router.get('/', async (req: Request, res: Response) => {
       return res.status(500).send({ error: 'Fel vid sparning av meddelande' });
     }
   })
+
+
+  // POST - Skapa ny kanal (endast inloggad användare kan göra det)
+router.post('/', async (req: Request, res: Response) => {
+  try {
+
+    const payload = validateJwt(req.headers.authorization);
+    if (!payload) {
+      return res.status(401).send({ error: "Du måste vara inloggad för att skapa en kanal." });
+    }
+
+    const { name, isLocked } = req.body ?? {};
+
+    if (typeof name !== "string" || name.trim().length === 0) {
+      return res.status(400).send({ error: "Ogiltigt kanalnamn." });
+    }
+
+    const locked = Boolean(isLocked); 
+
+    const channelId = crypto.randomUUID();
+    const now = new Date().toISOString();
+
+    const item = {
+      Pk: `CHANNEL#${channelId}`,
+      Sk: "INFO",
+      name: name.trim(),
+      isLocked: locked,
+      type: "channel",
+      createdAt: now,
+      createdBy: payload.userId,
+    };
+
+    await db.send(new PutCommand({
+      TableName: myTable,
+      Item: item,
+    }));
+
+    return res.status(201).send({
+      channelId,
+      name: item.name,
+      isLocked: item.isLocked,
+      createdAt: item.createdAt,
+      createdBy: item.createdBy,
+    });
+  } catch (err) {
+    console.error("ERROR vid skapande av kanal:", err);
+    return res.status(500).send({ error: "Fel vid skapande av kanal." });
+  }
+});
+
+
+
  
 export default router;
