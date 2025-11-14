@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { saveUser } from "../helpers/frontAuth";
+import { useUserStore } from "../helpers/userStore";
 import '../styles/RegisterLogin.css';
 
 function Login () {
@@ -8,6 +8,8 @@ function Login () {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");   
   const navigate = useNavigate();
+  const setUser = useUserStore((s) => s.setUser);
+
 
   async function handleLogin() {
     setError("");
@@ -29,8 +31,12 @@ function Login () {
       }
 
       if (data?.success && data.token && data.userId) {
-        saveUser(data.token, data.userId, data.username ?? username);
-        navigate("/loggedin");
+      setUser({
+        token: data.token,
+        userId: data.userId,
+        username: data.username ?? username,
+      });        
+      navigate("/loggedin");
       } else {
         setError("Kunde inte logga in.");
       }

@@ -1,38 +1,37 @@
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
 import "../styles/Headers.css";
-import { getUser, logoutUser } from "../helpers/frontAuth";
+import { useUserStore } from "../helpers/userStore.js";
 
 
 export default function Headers() {
   const navigate = useNavigate();
-  const { token } = getUser();
+
+  const token = useUserStore((s) => s.token);
+  const userId = useUserStore((s) => s.userId);
+  const logout = useUserStore((s) => s.logout);  
 
   function handleLogout() {
-     logoutUser(); 
-     navigate("/register"); 
+      logout();
+      navigate("/register");
   }
 
-  async function handleDeleteAccount() {
-  const { token, userId } = getUser();
 
+async function handleDeleteAccount() {
   if (!token || !userId) {
     return;
   }
 
   try {
-    const res = await fetch(
-      `http://localhost:10000/api/users/${userId}`,
-      {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
+    const res = await fetch(`/api/users/${userId}`, {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
 
     if (res.status === 204) {
-      logoutUser();
+      logout();
       navigate("/register");
     } else {
       console.error("Fel vid borttagning:", await res.json());
@@ -41,10 +40,6 @@ export default function Headers() {
     console.error("Nätverksfel:", err);
   }
 }
-
-
-
-
 
   return (
     <header className="head-menu">

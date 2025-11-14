@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import type { Channels, Message } from "../helpers/types";
+import { useUserStore } from "../helpers/userStore";
 
 
 function Channel () {
@@ -11,7 +12,7 @@ function Channel () {
   const [newChannelName, setNewChannelName] = useState("");
   const [newChannelLocked, setNewChannelLocked] = useState(false);
 
-  const jwt = localStorage.getItem("jwt");
+  const token = useUserStore((s) => s.token);
 
   function channelIdFromPk(pk: string) {
     return pk && pk.startsWith("CHANNEL#") ? pk.slice(8) : pk;
@@ -39,7 +40,7 @@ function Channel () {
   useEffect(() => {
     if (!chosenChannel) return;
     const id = channelIdFromPk(chosenChannel);
-    const headers: HeadersInit = jwt ? { Authorization: `Bearer ${jwt}` } : {};
+    const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
 
 
     async function loadMessages() {
@@ -60,7 +61,7 @@ function Channel () {
 
     }
     loadMessages();
-  }, [chosenChannel, jwt]);
+  }, [chosenChannel, token]);
 
   async function sendMessage() {
     const bodyText = text.trim();
@@ -69,7 +70,7 @@ function Channel () {
     const id = channelIdFromPk(chosenChannel);
     const headers: HeadersInit = {
       "Content-Type": "application/json",
-      ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
 
     const sendRes = await fetch(`/api/channels/${id}/messages`, {
@@ -81,7 +82,7 @@ function Channel () {
 
     setText("");
     const sendRes2 = await fetch(`/api/channels/${id}/messages`, {
-      headers: jwt ? { Authorization: `Bearer ${jwt}` } : {},
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     setMessages(sendRes2.ok ? await sendRes2.json() : []);
   }
@@ -89,13 +90,13 @@ function Channel () {
 
     async function createChannel() {
     const name = newChannelName.trim();
-    if (!name || !jwt) return;
+    if (!name || !token) return;
     try {
       const res = await fetch("/api/channels", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${jwt}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
           name,
@@ -125,41 +126,69 @@ function Channel () {
   }
 
 
+async function deleteChannel() {
+    if (!chosenChannel || !token) return;
 
+    const id = channelIdFromPk(chosenChannel);
 
-  return (
+    try {
+      const res = await fetch(`/api/channels/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      if (res.status === 204) {
+        setChannels((prev) => prev.filter((c) => c.Pk !== chosenChannel));
+        setChosenChannel("");
+        setMessages([]);
+      } else {
+        console.error("Kunde inte ta bort kanal, status:", res.status);
+      }
+    } catch (err) {
+      console.error("Fel vid borttagning av kanal:", err);
+    }
+  }
+
+ return (
     <div>
       <h2>Kanaler</h2>
 
-      {jwt && (
-        <div className="create-channel-container">
-          <input
-          className="create-channel"
-            id="add-input"
-            type="text"
-            placeholder="Kanalnamn"
-            value={newChannelName}
-            onChange={(e) => setNewChannelName(e.target.value)}
-          />
-          <label>
+      <div className="c-buttons">
+        {token && (
+          <div className="create-channel-container">
             <input
-              type="checkbox"
-              checked={newChannelLocked}
-              onChange={(e) => setNewChannelLocked(e.target.checked)}
-            />{" "}
-            Låst
-          </label>
-          <button
-            type="button"
-            onClick={createChannel}>
-            Skapa kanal
-          </button>
-        </div>
-      )}
+              className="create-channel"
+              id="add-input"
+              type="text"
+              placeholder="Kanalnamn"
+              value={newChannelName}
+              onChange={(e) => setNewChannelName(e.target.value)}
+            />
+            <label>
+              <input
+                type="checkbox"
+                checked={newChannelLocked}
+                onChange={(e) => setNewChannelLocked(e.target.checked)}
+              />{" "}
+              Låst
+            </label>
+            <button type="button" onClick={createChannel}>
+              Skapa kanal
+            </button>
+          </div>
+        )}
 
+        {token && (
+          <button type="button" onClick={deleteChannel}>
+            Ta bort denna kanal
+          </button>
+        )}
+      </div>
 
       <div>
-        {channels.map((c: any) => (
+        {channels.map((c: Channels) => (
           <div key={c.Pk}>
             <button onClick={() => setChosenChannel(c.Pk)}>
               {c.isLocked ? "Låst" : "Öppen"} {c.name || c.Pk}
@@ -174,7 +203,8 @@ function Channel () {
       {chosenChannel && (
         <div>
           <h3>Meddelanden</h3>
-          {messages.map((m: any) => (
+
+          {messages.map((m: Message) => (
             <div key={m.Sk}>
               <div>
                 {(m.senderName || m.senderId || "Okänd")} –{" "}
@@ -183,6 +213,7 @@ function Channel () {
               <div>{m.text}</div>
             </div>
           ))}
+
           {messages.length === 0 && <p>Inga meddelanden ännu</p>}
 
           <div>

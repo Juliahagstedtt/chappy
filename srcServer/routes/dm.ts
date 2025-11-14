@@ -20,9 +20,10 @@ interface Payload {
 }
 
 function extractToken(authHeader: string | undefined): string | null {
-  if (!authHeader) return null
-  if (authHeader.startsWith("Bearer: ")) return authHeader.substring(8).trim()
-  if (authHeader.startsWith("Bearer ")) return authHeader.substring(7).trim()
+  if (!authHeader) return null;
+  if (authHeader.startsWith("Bearer ")) {
+    return authHeader.substring(7).trim();
+  }
   return null
 }
 

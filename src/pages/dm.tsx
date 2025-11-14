@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import type { UserListItem, DmMessage} from "../helpers/types";
 import { UserListSchema, DmMessageListSchema } from "../helpers/types";
+import { useUserStore } from "../helpers/userStore";
+
 
 function Dm() {
 
@@ -9,8 +11,9 @@ function Dm() {
   const [messages, setMessages] = useState<DmMessage[]>([]);
   const [text, setText] = useState<string>("");
 
-  const jwt = localStorage.getItem("jwt");
-  const isLoggedIn = !!jwt;
+const token = useUserStore((s) => s.token);
+
+  const isLoggedIn = !!token;
   useEffect(() => {
     if (!isLoggedIn) {
       setUsers([]);
@@ -19,7 +22,7 @@ function Dm() {
 
     async function loadUsers() {
       try {
-        const headers: HeadersInit = { Authorization: `Bearer ${jwt}` };
+        const headers: HeadersInit = { Authorization: `Bearer ${token}` };
         const res = await fetch("/api/users", { headers });
         const data = await res.json();
         const parsed = UserListSchema.safeParse(data)
@@ -30,7 +33,7 @@ function Dm() {
     }
 
     loadUsers();
-  }, [isLoggedIn, jwt]);
+  }, [isLoggedIn, token]);
 
   useEffect(() => {
     if (!isLoggedIn || !chosenUserId) {
@@ -40,7 +43,7 @@ function Dm() {
 
     async function loadDm() {
       try {
-        const headers: HeadersInit = { Authorization: `Bearer ${jwt}` };
+        const headers: HeadersInit = { Authorization: `Bearer ${token}` };
         const res = await fetch(`/api/dm/${chosenUserId}/messages`, { headers });
         const data = await res.json();
 
@@ -52,7 +55,7 @@ function Dm() {
     }
 
     loadDm();
-  }, [isLoggedIn, chosenUserId, jwt]);
+  }, [isLoggedIn, chosenUserId, token]);
 
   async function sendMessage() {
     const bodyText = text.trim();
@@ -60,7 +63,7 @@ function Dm() {
 
     const headers: HeadersInit = {
       "Content-Type": "application/json",
-      Authorization: `Bearer ${jwt}`,
+      Authorization: `Bearer ${token}`,
     };
 
     const sent = await fetch(`/api/dm/${chosenUserId}/messages`, {

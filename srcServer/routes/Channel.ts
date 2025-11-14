@@ -1,4 +1,4 @@
-import {  ScanCommand, QueryCommand, PutCommand } from '@aws-sdk/lib-dynamodb';
+import {  ScanCommand, QueryCommand, PutCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 import express from 'express';
 import type { Request, Response } from 'express'; 
 import db, { myTable } from '../data/dynamoDb.js';
@@ -245,4 +245,76 @@ router.post('/', async (req: Request, res: Response) => {
 
 
  
+// DELETE - Ta bort kanal endast skaparen kan det
+router.delete('/:channelId', async (req: Request, res: Response) => {
+  try {
+    const payload = validateJwt(req.headers.authorization);
+    if (!payload) {
+      return res
+        .status(401)
+        .send({ error: "Du måste vara inloggad för att ta bort en kanal." });
+    }
+
+    const { channelId } = req.params;
+
+    const infoQuery = new QueryCommand({
+      TableName: myTable,
+      KeyConditionExpression: '#Pk = :pk AND #Sk = :sk',
+      ExpressionAttributeNames: { '#Pk': 'Pk', '#Sk': 'Sk' },
+      ExpressionAttributeValues: {
+        ':pk': `CHANNEL#${channelId}`,
+        ':sk': 'INFO',
+      },
+    });
+
+    const infoOut = await db.send(infoQuery);
+    const channel = infoOut.Items?.[0];
+
+    if (!channel) {
+      return res.sendStatus(404); 
+    }
+
+    if (channel.createdBy !== payload.userId) {
+      return res
+        .status(403)
+        .send({ error: "Du kan bara ta bort kanaler som du har skapat." });
+    }
+
+    const allItemsQuery = new QueryCommand({
+      TableName: myTable,
+      KeyConditionExpression: '#Pk = :pk',
+      ExpressionAttributeNames: { '#Pk': 'Pk' },
+      ExpressionAttributeValues: {
+        ':pk': `CHANNEL#${channelId}`,
+      },
+    });
+
+    const allItemsOut = await db.send(allItemsQuery);
+    const items = allItemsOut.Items ?? [];
+
+    for (const item of items) {
+      await db.send(
+        new DeleteCommand({
+          TableName: myTable,
+          Key: {
+            Pk: item.Pk,
+            Sk: item.Sk,
+          },
+        })
+      );
+    }
+
+    return res.sendStatus(204); 
+  } catch (err) {
+    console.error("ERROR vid borttagning av kanal:", err);
+    return res
+      .status(500)
+      .send({ error: "Fel vid borttagning av kanal." });
+  }
+});
+
+
+
+
+
 export default router;
