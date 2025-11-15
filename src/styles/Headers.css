@@ -1,11 +1,22 @@
 .head-menu {
-    background-color: rgba(0, 0, 0, 0.063);
-    padding: 12px 20px;
+    padding: 20px;
     width: 100%;
-    border-bottom: 3px solid #FF3499;
-    border: none;
-    display: flex;
-    justify-content: center;
+    background-color: rgba(179, 235, 235, 0.227);
+}
+.head-menu button {
+  padding: 8px 12px;
+  background: #9baeb0;
+  margin-left: 2px;
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+
+.head-menu button:hover {
+  background:  rgba(255, 113, 182, 1);
 }
 
 .head-menu nav {
@@ -31,7 +42,7 @@
 
 .logo:hover {
     border: none;
-    filter: drop-shadow(0 0 2em #ff3b69);
+    filter: drop-shadow(0 0 2em #ff7192);
 
 }
 
@@ -40,16 +51,12 @@
     gap: 10px;
 }
 
+
 .nav-buttons, .status button {
     padding: 8px 12px;
-    background: #FF3499;
+    background: #ff7d8d;
     border: none;
     color: white;
     border-radius: 4px;
     cursor: pointer;
-}
-
-.status {
-    font-size: 14px;
-    color: #86ff5d;
 }

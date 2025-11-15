@@ -1,9 +1,10 @@
-import {  } from "../helpers/frontAuth";
+import { useUserStore } from "../helpers/userStore";
+
 
 
 function LoggedIn() {
-  const username = localStorage.getItem("username");
-  const userId = localStorage.getItem("userId");
+  const username = useUserStore((s) => s.username);
+  const userId = useUserStore((s) => s.userId);
 
   return (
     <div>

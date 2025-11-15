@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+
 import type { Channels, Message } from "../helpers/types";
 import { useUserStore } from "../helpers/userStore";
 
@@ -11,6 +12,8 @@ function Channel () {
 
   const [newChannelName, setNewChannelName] = useState("");
   const [newChannelLocked, setNewChannelLocked] = useState(false);
+  const [showCreateNew, setShowCreateNew] = useState(false);
+
 
   const token = useUserStore((s) => s.token);
 
@@ -155,37 +158,51 @@ async function deleteChannel() {
     <div>
       <h2>Kanaler</h2>
 
-      <div className="c-buttons">
-        {token && (
-          <div className="create-channel-container">
-            <input
-              className="create-channel"
-              id="add-input"
-              type="text"
-              placeholder="Kanalnamn"
-              value={newChannelName}
-              onChange={(e) => setNewChannelName(e.target.value)}
-            />
-            <label>
-              <input
-                type="checkbox"
-                checked={newChannelLocked}
-                onChange={(e) => setNewChannelLocked(e.target.checked)}
-              />{" "}
-              Låst
-            </label>
-            <button type="button" onClick={createChannel}>
-              Skapa kanal
-            </button>
-          </div>
-        )}
+<div className="c-buttons">
+  {token && !showCreateNew && (
+    <button
+      type="button"
+      onClick={() => setShowCreateNew(true)}>
+      Lägg till +
+    </button>
+  )}
 
-        {token && (
-          <button type="button" onClick={deleteChannel}>
-            Ta bort denna kanal
-          </button>
-        )}
-      </div>
+  {token && showCreateNew && (
+    <div className="create-channel-container">
+      <input
+        className="create-channel"
+        id="add-input"
+        type="text"
+        placeholder="Kanalnamn"
+        value={newChannelName}
+        onChange={(e) => setNewChannelName(e.target.value)}
+      />
+      <label>
+        <input
+          type="checkbox"
+          checked={newChannelLocked}
+          onChange={(e) => setNewChannelLocked(e.target.checked)}
+        />{" "}
+        Låst
+      </label>
+      <button type="button" onClick={createChannel}>
+        Skapa kanal
+      </button>
+      <button
+        type="button"
+        onClick={() => setShowCreateNew(false)}
+      >
+        Avbryt
+      </button>
+    </div>
+  )}
+
+  {token && (
+    <button type="button" onClick={deleteChannel}>
+      Ta bort denna kanal
+    </button>
+  )}
+</div>
 
       <div>
         {channels.map((c: Channels) => (

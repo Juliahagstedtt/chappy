@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { useUserStore } from "../helpers/userStore";
 import '../styles/RegisterLogin.css';
 
@@ -69,6 +69,12 @@ return (
     <div className="Reg-buttons">        
         <button className="login" onClick={handleLogin} disabled={!username || !password}>Logga In</button>
     </div>
+
+      <div className="reg">
+        <Link to="/register">
+            <button className="reg" type="button">Registrera</button>
+        </Link>
+      </div>
 </div>
 
     );

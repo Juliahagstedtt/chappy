@@ -13,7 +13,7 @@ export default function Headers() {
 
   function handleLogout() {
       logout();
-      navigate("/register");
+      navigate("/login");
   }
 
 
@@ -55,9 +55,9 @@ async function handleDeleteAccount() {
 
           {!token && (
             <>
-              <Link to="/register">
+              {/* <Link to="/register">
                 <button type="button">Registrera</button>
-              </Link>
+              </Link> */}
 
               <Link to="/login">
                 <button type="button">Logga in</button>

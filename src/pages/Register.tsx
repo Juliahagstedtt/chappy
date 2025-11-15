@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { saveUser } from "../helpers/frontAuth";
 import '../styles/RegisterLogin.css';
+import { useUserStore } from "../helpers/userStore";
+
 
 function Register () {
 const [username, setUsername] = useState("");
 const [password, setPassword] = useState("");
 const [error, setError] = useState("");   
 const navigate = useNavigate(); 
+const setUser = useUserStore((s) => s.setUser);
 
   async function handleRegister() {
     setError("");
@@ -37,7 +39,11 @@ const navigate = useNavigate();
       }
 
       if (data?.success && data.token && data.userId) {
-        saveUser(data.token, data.userId, data.username ?? username);
+        setUser({
+          token: data.token,
+          userId: data.userId,
+          username: data.username ?? username,
+        });
         navigate("/loggedin");
       } else {
         setError("Kunde inte skapa användare (ogiltigt svar från servern).");

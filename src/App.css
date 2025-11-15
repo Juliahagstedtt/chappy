@@ -1,16 +1,85 @@
 #root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
   text-align: center;
 }
 
+.head-menu {
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.063);
+  padding: 60px 20px;
+  border-bottom: 3px solid rgba(255, 113, 182, 1);
+
+  display: flex;
+  justify-content: center;
+}
+
+.head-menu nav {
+  width: 100%;
+  max-width: 1100px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
 .logo {
-  height: 6em;
-  padding: 1.5em;
-  background: transparent;
   background: none;
   border: none;
+  cursor: pointer;
   padding: 0;
+}
+
+.logo img {
+  height: 45px;
+}
+
+
+.nav-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.nav-buttons button {
+  padding: 8px 12px;
+  background: #ff7d8d;
+  border: none;
+  color: white;
+  border-radius: 4px;
   cursor: pointer;
 }
+
+.nav-buttons button:hover {
+  background: rgba(255, 113, 182, 1);
+}
+
+button {
+  border: none;
+  border-radius: 8px;
+  padding: 1em 2em;
+  font-size: 1em;
+  font-weight: 500;
+  cursor: pointer;
+  background-color: #ff8bec43;
+}
+
+button:hover {
+  border-color: rgba(255, 113, 182, 1)
+}
+
+input,
+select,
+textarea {
+  background-color: white;
+  color: black;
+  padding: 7px;
+  margin: 5px auto;
+  display: block;
+  border-radius: 5px;
+  width: 100%;
+  max-width: 220px;
+}
+
+

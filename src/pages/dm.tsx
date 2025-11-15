@@ -1,7 +1,9 @@
 import { useState, useEffect } from "react";
 import type { UserListItem, DmMessage} from "../helpers/types";
 import { UserListSchema, DmMessageListSchema } from "../helpers/types";
+import "../styles/dm.css";
 import { useUserStore } from "../helpers/userStore";
+
 
 
 function Dm() {
@@ -91,30 +93,32 @@ const token = useUserStore((s) => s.token);
   }
 
    return (
-    <div>
+    <div className="dm-container">
       <h3>Direktmeddelanden</h3>
 
-      <h4>Välj användare</h4>
-      <div>
-        {users.length === 0 && <p>Inga användare</p>}
+<div className="dm-wrapper">
+    <div className="dm-users">
+      {!chosenUserId && <h4>Välj en användare</h4>}
+      {users.length === 0 && <p>Inga användare</p>}
+      <ul className="user-list">
         {users.map((u) => (
-          <div key={u.userId}>
+          <li key={u.userId}>
             <button
               onClick={() => {
                 setChosenUserId(u.userId);
-                setMessages([]); 
+                setMessages([]);
               }}
             >
               {u.username || u.userId}
             </button>
-          </div>
+          </li>
         ))}
-      </div>
-
-      {!chosenUserId && <p>Välj en användare ovan</p>}
+      </ul>
+    </div>
+    
 
       {chosenUserId && (
-        <div>
+        <div className="dm-chat">
           <h4>Konversation</h4>
 
           {messages.length === 0 && <p>Inga meddelanden ännu</p>}
@@ -128,7 +132,7 @@ const token = useUserStore((s) => s.token);
             </div>
           ))}
 
-          <div>
+          <div className="dm-text">
             <textarea
               value={text}
               onChange={(e) => setText(e.target.value)}
@@ -139,6 +143,7 @@ const token = useUserStore((s) => s.token);
         </div>
       )}
     </div>
+  </div>
   );
 }
 

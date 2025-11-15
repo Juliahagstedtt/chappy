@@ -1,0 +1,78 @@
+.dm-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  text-align: left;
+  color: black;
+}
+
+.dm-wrapper {
+  display: flex;
+  gap: 20px;
+  margin-top: 1rem;
+  background-color: #ffe9f5;
+  padding: 30px;
+}
+
+.dm-users {
+  width: 200px;
+}
+
+.user-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-list button {
+  width: 100%;
+  padding: 8px;
+  border: 1px solid #ccc;
+  background: white;
+  color: #000000;
+  cursor: pointer;
+  text-align: left;
+}
+
+.user-list button:hover {
+  background: #ffe0ee;
+}
+
+.dm-chat {
+  flex: 1;
+  background: #ffe9f5;
+  padding: 12px;
+  border-radius: 6px;
+}
+
+.dm-text {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.dm-text textarea {
+  flex: 1;
+  min-height: 60px;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.dm-text button {
+  padding: 8px 12px;
+  border: none;
+  cursor: pointer;
+}
+
+.dm-text button:hover {
+  background: #ff6fb8;
+}
+
+@media (max-width: 600px) {
+  .dm-wrapper {
+    flex-direction: column;
+  }
+
+  .dm-users {
+    width: 100%;
+  }
+}

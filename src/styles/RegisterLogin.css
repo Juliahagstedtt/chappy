@@ -16,7 +16,7 @@
 }
 
 .register, .login {
-    background-color: #FF3499;
+    background-color: #000000;
     color: white;
     border: none;
     padding: 10px;
@@ -36,13 +36,8 @@
 
 }
 
-.login {
-    background-color: #FF3499;
-    color: white;
-    border: none;
-    padding: 10px;
-    border-radius: 9px;
-    width: 100px;
-    cursor: pointer;
-    margin-bottom: 30px;
+.reg {
+    background: none;    
+    color: rgba(255, 113, 182, 1);
+    text-decoration: underline;
 }
