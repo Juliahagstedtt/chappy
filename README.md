@@ -1,5 +1,8 @@
 ## Chappy
 
+Länk till Publicerad sida:
+https://fullstack-setup-1.onrender.com/
+
 Välkommen till projektet Chappy!
 Här har jag jobbat med både backend och frontend.
 
