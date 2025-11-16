@@ -1,26 +1,317 @@
+.channel-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  text-align: left;
+  color: black;
+}
 
- .channel-container {
-   display: "flex", 
-   /* Gap 18 */
- }
+.channel-wrapper {
+  display: flex;
+  gap: 20px;
+  margin-top: 1rem;
+  border-radius: 10px;
+  background-color: #ffffff;
+  padding: 30px;
+}
 
- .create-channel, .add-input {
-    width: 220px;
-    height: 100px;
-    background-color: white;
-    color: rgb(0, 0, 0);
-    padding: 7px;
-    margin-top: 5px;
-    border-radius: 5px;
-    background-color: blueviolet;
- }
 
- .create-channel-container {
-  max-width: 320px;
-  margin: 40px auto;
-  padding: 24px 20px;
-  border-radius: 12px;
+
+.channel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  color: rgb(255, 255, 255);
+}
+
+h3 {
+  color: rgb(0, 0, 0);
+}
+
+h {
+ color: #ff6fb8;
+}
+
+.channel-list button {
+  width: 100%;
+  padding: 15px;
+  border: 1px solid #ccc;
+  background: rgb(255, 255, 255);
+  color: black;
+  cursor: pointer;
+  text-align: left;
+}
+
+.channel-list button:hover {
+  background: #ffe0ee;
+}
+
+.create-channel-container {
+  background: rgba(255, 255, 255, 0);
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 10px;
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
- }
+  gap: 10px;
+}
+
+.create-channel {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.channel-chat {
+  flex: 1;
+  background: #f3f3f3;
+  padding: 12px;
+  border-radius: 6px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.channel-channels {
+  width: 200px;
+  flex-shrink: 0;
+}
+
+.channel-text {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.channel-text textarea {
+  flex: 1;
+  min-height: 60px;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.channel-text button {
+  border: none;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  width: 70px;  
+  flex-shrink: 0;
+}
+
+.channel-text button:hover {
+  background: #ff6fb8;
+}
+
+.channel-delete {
+  margin-top: 12px;
+  background: #000000;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.channel-delet:hover {
+  background: #ff6fb8;
+}
+
+.channel-container {
+  max-width: 900px;
+  margin: 2rem auto;
+  text-align: left;
+  color: black;
+}
+
+.channel-wrapper {
+  display: flex;
+  margin-top: 1rem;
+  border-radius: 10px;
+  background-color: #ffffff;
+  padding: 30px;
+}
+
+.channel-locked {
+  display: inline-flex;
+  align-items: center;
+  margin: 0;
+}
+
+.channel-channels {
+  width: 220px;
+}
+
+.channel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+h2 {
+  color: rgb(255, 255, 255);
+}
+
+h3 {
+  color: rgb(0, 0, 0);
+}
+
+h {
+ color: #ff6fb8;
+}
+
+.channel-list button {
+  width: 150px;
+  padding: 15px;
+  border: 1px solid #ccc;
+  background: rgb(255, 255, 255);
+  color: black;
+  cursor: pointer;
+  text-align: left;
+}
+
+.channel-list button:hover {
+  background: #ffe0ee;
+}
+
+.create-channel-container {
+  background: rgba(255, 255, 255, 0);
+  padding: 16px;
+  margin-bottom: 16px;
+  border-radius: 10px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.create-channel {
+  width: 100%;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.channel-chat {
+  flex: 1;
+  background: #f3f3f3;
+  padding: 12px;
+  border-radius: 6px;
+  display: flex;         
+  flex-direction: column;  
+  height: 100%;    
+}
+
+.channel-text {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+.message-timestamp {
+  font-size: 10px;
+  opacity: 0.45;
+}
+
+.channel-text textarea {
+  flex: 1;
+  min-height: 60px;
+  padding: 8px;
+  border: 1px solid #ccc;
+}
+
+.channel-chat-messages {
+  flex: 1;
+  margin-bottom: 12px;
+  overflow-y: auto; 
+}
+
+.channel-text button {
+  border: none;
+  cursor: pointer;
+  padding: 3px 6px;
+  border-radius: 6px;
+  width: 70px;  
+  flex-shrink: 0;
+}
+
+.channel-text button:hover {
+  background: #ff6fb8;
+}
+
+.channel-delete {
+  margin-top: 12px;
+  background: #000000;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.channel-delet:hover {
+  background: #ff6fb8;
+}
+@media (max-width: 900px) {
+  .channel-wrapper {
+    padding: 20px;
+    gap: 16px;
+  }
+}
+
+
+@media (max-width: 700px) {
+  .channel-wrapper {
+    flex-direction: column;  
+  }
+
+  .channel-channels {
+    width: 100%;           
+  }
+
+  .channel-chat {
+    width: 100%;
+  }
+}
+
+@media (max-width: 650px) {
+  .channel-wrapper {
+    flex-direction: column;
+  }
+
+  .channel-channels {
+    width: 100%;
+  }
+
+  .channel-chat {
+    width: 100%;
+  }
+
+  .channel-list button {
+    font-size: 15px;
+    padding: 12px;
+  }
+}
+
+@media (max-width: 390px) {
+  .channel-wrapper {
+    padding: 10px;
+  }
+
+  .channel-text {
+    flex-direction: column;
+  }
+
+  .channel-text button {
+    width: 100%;
+    padding: 12px;
+  }
+
+  .channel-delete {
+    width: 100%;
+    padding: 12px;
+  }
+}

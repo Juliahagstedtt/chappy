@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-
+import "../styles/channels.css";
 import type { Channels, Message } from "../helpers/types";
 import { useUserStore } from "../helpers/userStore";
 
+const API = "/api";
 
 function Channel () {
   const [channels, setChannels] = useState<Channels[]>([]);  
@@ -16,6 +17,9 @@ function Channel () {
 
 
   const token = useUserStore((s) => s.token);
+  const userId = useUserStore((s) => s.userId);
+  const currentChannel = channels.find(c => c.Pk === chosenChannel);
+  const isOwner = currentChannel?.createdBy === userId;
 
   function channelIdFromPk(pk: string) {
     return pk && pk.startsWith("CHANNEL#") ? pk.slice(8) : pk;
@@ -24,13 +28,18 @@ function Channel () {
   useEffect(() => {
     async function loadChannels() {
     try {
-        const sendRes = await fetch("/api/channels");
-        const list = await sendRes.json();
+        const headers: HeadersInit = token ? { Authorization: `Bearer ${token}` } : {};
+
+        const sendRes = await fetch(`${API}/channels`, {
+          headers,
+        });
+
+      const list = await sendRes.json();
         
     if (Array.isArray(list)) {
         setChannels(list);
     } else {
-        setMessages([]);
+        setChannels([]);
     }
 
     } catch {
@@ -38,8 +47,8 @@ function Channel () {
     }
     }
     loadChannels();
-  }, []);
-
+}, [token]);
+  
   useEffect(() => {
     if (!chosenChannel) return;
     const id = channelIdFromPk(chosenChannel);
@@ -48,14 +57,31 @@ function Channel () {
 
     async function loadMessages() {
     try {
-        const sendRes = await fetch(`/api/channels/${id}/messages`, { headers });
-        const list = await sendRes.json();
+
+      const res = await fetch(`/api/channels/${id}/messages`, {
+        headers,
+      });
+
+  if (res.status === 401) {
+      console.log("Kan inte öppna en låst kanal utan att vara inloggad.");
+      setMessages([]);
+      return;
+    }
+
+
+    if (!res.ok) {
+      console.log("Fel vid hämtning av meddelanden. Status:", res.status);
+      setMessages([]);
+      return;
+    }
+
+    const list = await res.json();
 
     if (Array.isArray(list)) {
         setMessages(list);  
         
     } else {
-    setChannels([]);
+    setMessages([]);
     }
         
     } catch {
@@ -76,15 +102,16 @@ function Channel () {
       ...(token ? { Authorization: `Bearer ${token}` } : {}),
     };
 
-    const sendRes = await fetch(`/api/channels/${id}/messages`, {
-      method: "POST",
-      headers,
-      body: JSON.stringify({ text: bodyText }),
-    });
-    if (!sendRes.ok) return;
+    const res = await fetch(`/api/channels/${id}/messages`, {
+        method: "POST",
+        headers,
+        body: JSON.stringify({ text: bodyText }),
+      });
+
+    if (!res.ok) return;
 
     setText("");
-    const sendRes2 = await fetch(`/api/channels/${id}/messages`, {
+    const sendRes2 = await fetch(`${API}/channels/${id}/messages`, {
       headers: token ? { Authorization: `Bearer ${token}` } : {},
     });
     setMessages(sendRes2.ok ? await sendRes2.json() : []);
@@ -95,16 +122,13 @@ function Channel () {
     const name = newChannelName.trim();
     if (!name || !token) return;
     try {
-      const res = await fetch("/api/channels", {
+      const res = await fetch(`/api/channels`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`
         },
-        body: JSON.stringify({
-          name,
-          isLocked: newChannelLocked,
-        }),
+        body: JSON.stringify({ name, isLocked: newChannelLocked }),
       });
 
       if (!res.ok) {
@@ -116,7 +140,7 @@ function Channel () {
       setNewChannelName("");
       setNewChannelLocked(false);
 
-      const sendRes = await fetch("/api/channels");
+      const sendRes = await fetch(`${API}/channels`);
       const list = await sendRes.json();
       if (Array.isArray(list)) {
         setChannels(list);
@@ -135,7 +159,7 @@ async function deleteChannel() {
     const id = channelIdFromPk(chosenChannel);
 
     try {
-      const res = await fetch(`/api/channels/${id}`, {
+      const res = await fetch(`${API}/channels/${id}`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -155,17 +179,17 @@ async function deleteChannel() {
   }
 
  return (
-    <div>
+    <div className="channel-container">
       <h2>Kanaler</h2>
-
-<div className="c-buttons">
-  {token && !showCreateNew && (
-    <button
-      type="button"
-      onClick={() => setShowCreateNew(true)}>
-      Lägg till +
-    </button>
-  )}
+        <div className="channel-wrapper">
+        <div className="channel-channels">
+          {token && !showCreateNew && (
+            <button
+              type="button"
+              onClick={() => setShowCreateNew(true)}>
+              Lägg till +
+            </button>
+          )}
 
   {token && showCreateNew && (
     <div className="create-channel-container">
@@ -177,13 +201,14 @@ async function deleteChannel() {
         value={newChannelName}
         onChange={(e) => setNewChannelName(e.target.value)}
       />
-      <label>
+      <label className="channel-locked">
+        Låst
         <input
           type="checkbox"
           checked={newChannelLocked}
           onChange={(e) => setNewChannelLocked(e.target.checked)}
-        />{" "}
-        Låst
+        />
+        
       </label>
       <button type="button" onClick={createChannel}>
         Skapa kanal
@@ -196,54 +221,62 @@ async function deleteChannel() {
       </button>
     </div>
   )}
+          <ul className="channel-list">
+            {channels.map((c: Channels) => (
+              <li key={c.Pk}>
+                <button onClick={() => setChosenChannel(c.Pk)}>
+                  {c.isLocked ? "Låst" : "Öppen"} {c.name || c.Pk}
+                </button>
+              </li>
+            ))}
+          </ul>
 
-  {token && (
-    <button type="button" onClick={deleteChannel}>
-      Ta bort denna kanal
-    </button>
-  )}
-</div>
-
-      <div>
-        {channels.map((c: Channels) => (
-          <div key={c.Pk}>
-            <button onClick={() => setChosenChannel(c.Pk)}>
-              {c.isLocked ? "Låst" : "Öppen"} {c.name || c.Pk}
-            </button>
-          </div>
-        ))}
-        {channels.length === 0 && <p>Inga kanaler</p>}
-      </div>
-
-      {!chosenChannel && <p>Ingen kanal vald</p>}
-
-      {chosenChannel && (
-        <div>
-          <h3>Meddelanden</h3>
-
-          {messages.map((m: Message) => (
-            <div key={m.Sk}>
-              <div>
-                {(m.senderName || m.senderId || "Okänd")} –{" "}
-                {new Date(m.time).toLocaleString()}
-              </div>
-              <div>{m.text}</div>
-            </div>
-          ))}
-
-          {messages.length === 0 && <p>Inga meddelanden ännu</p>}
-
-          <div>
-            <textarea
-              value={text}
-              onChange={(e) => setText(e.target.value)}
-              placeholder="Skriv…"
-            />
-            <button onClick={sendMessage}>Skicka</button>
-          </div>
+          {channels.length === 0 && <p>Inga kanaler</p>}
         </div>
-      )}
+
+        <div className="channel-chat">
+          {!chosenChannel && <p>Ingen kanal vald</p>}
+
+          {chosenChannel && (
+            <>
+              <h4>Meddelanden</h4>
+
+              {messages.map((m: Message) => (
+                <div key={m.Sk}>
+                  <div>
+                    {(m.senderName || m.senderId || "Okänd")} –{" "}
+                    {new Date(m.time).toLocaleString()}
+                  </div>
+                  <div>{m.text}</div>
+                </div>
+              ))}
+
+              {messages.length === 0 && <p>Inga meddelanden ännu</p>}
+
+              <div className="channel-text">
+                <textarea
+                  value={text}
+                  onChange={(e) => setText(e.target.value)}
+                  placeholder="Skriv…"
+                />
+                <button onClick={sendMessage}>Skicka</button>
+              </div>
+
+            {token && isOwner && (
+              <button
+                type="button"
+                className="channel-delete"
+                onClick={deleteChannel}
+              >
+                Ta bort denna kanal
+              </button>
+            )}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 }
+
 export default Channel;

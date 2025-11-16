@@ -10,8 +10,8 @@
   line-height: 1.5;
 
   color-scheme: dark;
-  color: #213547;
-  background-color: #ffffff;
+  color: #ffffff;
+  background-color: #393636;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
@@ -22,9 +22,13 @@ html, body, #root {
   width: 100%;
 }
 
-body {
-  min-width: 320px;
-  min-height: 100vh;
+@media (max-width: 390px) {
+  :root {
+    font-size: 14px;
+    line-height: 1.4;
+  }
+
+  body {
+    padding: 0 8px;
+  }
 }
-
-

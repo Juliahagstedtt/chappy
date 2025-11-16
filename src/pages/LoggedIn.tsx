@@ -1,4 +1,5 @@
 import { useUserStore } from "../helpers/userStore";
+import chatbubbles from "../assets/chat.webp";
 
 
 
@@ -10,6 +11,8 @@ function LoggedIn() {
     <div>
       <h1>Inloggad!</h1>
       <p>Välkommen {username || userId || "Gäst"}</p>
+      <img src={chatbubbles} alt="chat" className="bubbles" />
+
     </div>
   );
 }

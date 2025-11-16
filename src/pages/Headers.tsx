@@ -1,5 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import logo from "../assets/logo.png";
+import logoutIcon from "../assets/Logout.png";
+import removeAccount from "../assets/removeAccount.png";
 import "../styles/Headers.css";
 import { useUserStore } from "../helpers/userStore.js";
 
@@ -43,42 +45,44 @@ async function handleDeleteAccount() {
 
   return (
     <header className="head-menu">
-      <nav>
-        <Link to="/" className="logo">
-          <img src={logo} alt="logo" className="chappy" />
+<nav>
+  <Link to="/" className="logo">
+    <img src={logo} alt="logo" className="chappy" />
+  </Link>
+
+  <div className="nav-buttons">
+    <Link to="/channel">
+      <button type="button">Kanaler</button>
+    </Link>
+
+    {!token && (
+      <>
+        <Link to="/login">
+          <button type="button">Logga in</button>
         </Link>
+      </>
+    )}
 
-        <div>
-          <Link to="/channel">
-            <button type="button">Kanaler</button>
-          </Link>
 
-          {!token && (
-            <>
-              {/* <Link to="/register">
-                <button type="button">Registrera</button>
-              </Link> */}
-
-              <Link to="/login">
-                <button type="button">Logga in</button>
-              </Link>
-            </>
-          )}
-
-          {token && (
-            <>
-              <Link to="/dm">
-                <button type="button">DirektMeddelanden</button>
-              </Link>
-
-              <button type="button" onClick={handleDeleteAccount}>Ta bort konto</button>
-              <button type="button" onClick={handleLogout}>
-                Logga ut
+    {token && (
+      <>
+      <div className="loggedIn-buttons">
+        <Link to="/dm">
+          <button type="button">Meddelanden</button>
+        </Link>
+        <button className="remove-button" type="button" onClick={handleDeleteAccount}>                
+            <img src={removeAccount} alt="removeAccount-ikon" />
+        </button>
+              <button
+                type="button"
+                onClick={handleLogout}
+                className="logout-button">
+                <img src={logoutIcon} alt="logout-ikon" />
               </button>
-            </>
-          )}
-        </div>
-      </nav>
+     </div></>
+    )}
+  </div>
+</nav>
     </header>
   );
 }

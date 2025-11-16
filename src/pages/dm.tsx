@@ -14,6 +14,8 @@ function Dm() {
   const [text, setText] = useState<string>("");
 
 const token = useUserStore((s) => s.token);
+const currentUserId = useUserStore((s) => s.userId);
+
 
   const isLoggedIn = !!token;
   useEffect(() => {
@@ -28,14 +30,19 @@ const token = useUserStore((s) => s.token);
         const res = await fetch("/api/users", { headers });
         const data = await res.json();
         const parsed = UserListSchema.safeParse(data)
-        setUsers(parsed.success ? parsed.data : []);
-      } catch {
-        setUsers([]);
-      }
+      
+        const filtered = parsed.success
+        ? parsed.data.filter(u => u.userId !== currentUserId)
+        : [];
+
+      setUsers(filtered);
+    } catch {
+      setUsers([]);
     }
+  }
 
     loadUsers();
-  }, [isLoggedIn, token]);
+  }, [isLoggedIn, token, currentUserId]);
 
   useEffect(() => {
     if (!isLoggedIn || !chosenUserId) {
@@ -94,7 +101,7 @@ const token = useUserStore((s) => s.token);
 
    return (
     <div className="dm-container">
-      <h3>Direktmeddelanden</h3>
+      <h2>Direktmeddelanden</h2>
 
 <div className="dm-wrapper">
     <div className="dm-users">

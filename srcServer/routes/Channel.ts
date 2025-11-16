@@ -1,39 +1,15 @@
 import {  ScanCommand, QueryCommand, PutCommand, DeleteCommand } from '@aws-sdk/lib-dynamodb';
 import express from 'express';
-import type { Request, Response } from 'express'; 
+import type { Response } from 'express';
+import type { AuthRequest } from '../data/middleware.js';
 import db, { myTable } from '../data/dynamoDb.js';
-import { verifyToken } from "../data/Jwt.js";
+import { checkLogin } from '../data/middleware.js';
 import crypto from "crypto";
 
 const router = express.Router();
 
-// payload från jwt (userId)
-interface Payload {
-  userId: string;
-}
-
-// Funktion för att ta emot Authorization headern (de som innehåller Bearer token)
-// Här förösker veriferar med functionen för att returnera payload (användarens id) 
-function validateJwt(authHeader?: string): Payload | null { // Om token saknas eller är ogilltig ret null
-
-    if (!authHeader) return null; // Retur null om inte authorization header finns
-
-    // här delas upp den på mellanslaget och tar andra delen, alltså själva token-strängen
-    const token = authHeader.split(' ')[1] ?? '';
-    if (!token) return null; // retur null om token inte finns 
-
-    // funktionen kontrollerar att jwt är korrekt
-    try {
-        const payload = verifyToken(token);
-        return { userId: payload.userId }; // retur användarens payload (vilket är ett objekt med användarens id)
-    } catch {
-        return null; // Om fel uppstår retur null (användare blir behnadlad som gäst)
-    }
-}
-
-
 // GET - Hämta alla kanaler (öppna + låsta) (även tillänglig för gäster)
-router.get('/', async (req: Request, res: Response) => {
+router.get('/', async (req: AuthRequest, res: Response) => {
     try { // Hämtar hela db tebellen med Scan
         const data = await db.send(new ScanCommand({ TableName: myTable }));
 
@@ -56,7 +32,7 @@ router.get('/', async (req: Request, res: Response) => {
 
 
   // GET id - Hämta meddelanden i en kanal
-  router.get('/:channelId/messages', async (req: Request, res: Response) => {
+  router.get('/:channelId/messages', checkLogin, async (req: AuthRequest, res: Response) => {
 
     try {
       // hämtar ut kanalens id från url parametern
@@ -80,7 +56,7 @@ router.get('/', async (req: Request, res: Response) => {
         if (!channel) return res.sendStatus(404); // om kanalen inte finns retur 404
 
         // här kontrollerar de om användaren är inloggad, genom att validera jwt token i headern
-        const loggedIn = validateJwt(req.headers.authorization) !== null;
+        const loggedIn = !!req.user;
 
         // om kanalen är låst och användaren inte är inloggad return 401
         if (channel.isLocked === true && !loggedIn) return res.sendStatus(401);
@@ -118,10 +94,10 @@ router.get('/', async (req: Request, res: Response) => {
 
 
   // POST id - Skicka meddelande till kanal
-  router.post('/:channelId/messages', async (req: Request, res: Response) => {
+  router.post('/:channelId/messages', checkLogin, async (req: AuthRequest, res: Response) => {
     try {
       const { channelId } = req.params;
-      const { text, senderName } = req.body ?? {};
+      const { text } = req.body ?? {};
 
       if (typeof text !== 'string' || text.trim().length === 0) {
         return res.status(400).send({ error: 'Ogiltig text' });
@@ -144,13 +120,13 @@ router.get('/', async (req: Request, res: Response) => {
       if (!channel) return res.sendStatus(404);
 
       // Kontrollerar om användaren är inloggad
-      const loggedIn = validateJwt(req.headers.authorization) !== null;
+      const loggedIn = !!req.user;
 
       // om kanalen är låst är användaren inte inloggad (return 401 unauth)
       if (channel.isLocked === true && !loggedIn) return res.sendStatus(401);
 
-      // hämta payload om userId finns
-      const payload = validateJwt(req.headers.authorization);
+      
+      const payload = req.user;
 
       let sendName = 'Guest'; // Gäst
 
@@ -195,13 +171,13 @@ router.get('/', async (req: Request, res: Response) => {
 
 
   // POST - Skapa ny kanal (endast inloggad användare kan göra det)
-router.post('/', async (req: Request, res: Response) => {
+router.post('/',  checkLogin, async (req: AuthRequest, res: Response) => {
   try {
 
-    const payload = validateJwt(req.headers.authorization);
-    if (!payload) {
-      return res.status(401).send({ error: "Du måste vara inloggad för att skapa en kanal." });
+    if (!req.user) {
+      return res.status(401).send({ error: "Du måste vara inloggad." });
     }
+    const payload = req.user;
 
     const { name, isLocked } = req.body ?? {};
 
@@ -246,13 +222,12 @@ router.post('/', async (req: Request, res: Response) => {
 
  
 // DELETE - Ta bort kanal endast skaparen kan det
-router.delete('/:channelId', async (req: Request, res: Response) => {
+router.delete('/:channelId', checkLogin, async (req: AuthRequest, res: Response) => {
+  const payload = req.user!;
+
   try {
-    const payload = validateJwt(req.headers.authorization);
-    if (!payload) {
-      return res
-        .status(401)
-        .send({ error: "Du måste vara inloggad för att ta bort en kanal." });
+      if (!req.user) {
+      return res.status(401).send({ error: "Du måste vara inloggad." });
     }
 
     const { channelId } = req.params;
@@ -273,6 +248,9 @@ router.delete('/:channelId', async (req: Request, res: Response) => {
     if (!channel) {
       return res.sendStatus(404); 
     }
+    
+    console.log("PAYLOAD från token:", payload);
+    console.log("CREATED BY i kanalen:", channel.createdBy);
 
     if (channel.createdBy !== payload.userId) {
       return res
@@ -307,9 +285,11 @@ router.delete('/:channelId', async (req: Request, res: Response) => {
     return res.sendStatus(204); 
   } catch (err) {
     console.error("ERROR vid borttagning av kanal:", err);
+
     return res
       .status(500)
       .send({ error: "Fel vid borttagning av kanal." });
+      
   }
 });
 

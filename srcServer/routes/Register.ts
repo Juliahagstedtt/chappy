@@ -93,6 +93,7 @@ router.post('/register', async (req, res) => {
             success: true,
             message: "Användare skapad",
             userId: userId,
+            username: username,
             token
         });
 

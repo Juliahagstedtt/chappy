@@ -2,7 +2,7 @@ import express from 'express';
 import type { Request, Response } from 'express'; 
 import db, { myTable } from '../data/dynamoDb.js'
 import { ScanCommand, QueryCommand, PutCommand } from "@aws-sdk/lib-dynamodb";
-import jwt from 'jsonwebtoken'
+import { validateJwt } from "../data/validateJwt.js";
 
 const router = express.Router();
 
@@ -17,29 +17,6 @@ interface DmBody {
 interface Payload {
   userId: string
   accessLevel?: string
-}
-
-function extractToken(authHeader: string | undefined): string | null {
-  if (!authHeader) return null;
-  if (authHeader.startsWith("Bearer ")) {
-    return authHeader.substring(7).trim();
-  }
-  return null
-}
-
-function validateJwt(authHeader: string | undefined): Payload | null {
-  const token = extractToken(authHeader)
-  if (!token) return null
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET || '') as { userId: string; accessLevel?: string }
-    const payload: Payload = {
-      userId: decoded.userId,
-      ...(typeof decoded.accessLevel === 'string' ? { accessLevel: decoded.accessLevel } : {})
-    }
-    return payload
-  } catch {
-    return null
-  }
 }
 
 // api/messages/dm/:otherUserId

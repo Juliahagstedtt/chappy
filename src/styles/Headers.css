@@ -1,17 +1,7 @@
 .head-menu {
     padding: 20px;
     width: 100%;
-    background-color: rgba(179, 235, 235, 0.227);
-}
-.head-menu button {
-  padding: 8px 12px;
-  background: #9baeb0;
-  margin-left: 2px;
-  border: none;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
+    background-color: #393636;
 }
 
 
@@ -51,12 +41,98 @@
     gap: 10px;
 }
 
+.loggedIn-buttons {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
 
-.nav-buttons, .status button {
-    padding: 8px 12px;
-    background: #ff7d8d;
-    border: none;
-    color: white;
-    border-radius: 4px;
-    cursor: pointer;
+.head-menu button,
+.loggedIn-buttons button {
+  padding: 8px 12px;
+  height: 36px;
+  margin-left: 0; 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 113, 182, 1);
+  border: none;
+  color: white;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  text-decoration: none;
+}
+
+.head-menu button:hover,
+.loggedIn-buttons button:hover {
+  background: rgb(0, 0, 0);
+}
+
+.loggedIn-buttons img {
+  width: 18px;
+  height: 18px;
+}
+
+a {
+  text-decoration: none;
+}
+
+@media (max-width: 900px) {
+  .logo img {
+    height: 40px;
+  }
+
+  .head-menu {
+    padding: 14px 16px;
+  }
+}
+
+@media (max-width: 600px) {
+  .head-menu {
+    padding: 12px 12px;
+  }
+
+  .head-menu nav {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .logo {
+    align-self: flex-start;
+  }
+
+  .logo img {
+    height: 38px;
+  }
+
+  .nav-buttons {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+}
+
+@media (max-width: 390px) {
+  .head-menu {
+    padding: 10px 10px;
+  }
+
+  .logo img {
+    height: 34px;
+  }
+
+  .nav-buttons {
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nav-buttons button,
+  .status button,
+  .head-menu button {
+    width: 100%;
+    margin-left: 0;
+    padding: 10px;
+    font-size: 14px;
+  }
 }

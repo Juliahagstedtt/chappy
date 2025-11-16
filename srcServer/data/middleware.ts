@@ -16,8 +16,9 @@ export const checkLogin = (req: AuthRequest, res: Response, next: NextFunction) 
     return next(); 
   }
 
-// Hämtar och plockar ut token för att verifiera användaren
-    const token = authHeader.split(" ")[1];
+  const token = authHeader.startsWith("Bearer ")
+  ? authHeader.split(" ")[1]
+  : authHeader;
 
 // Om ingen tonken finns = blir man gäst
   if (!token) {
@@ -26,15 +27,12 @@ export const checkLogin = (req: AuthRequest, res: Response, next: NextFunction) 
   }
 
   try {
-    // Kolla att token är giltig
 
-    // TODO: fixa payload
     const payload = verifyToken(token); 
     req.user = { userId: payload.userId };
     
   } catch {
-    // Om token är ogiltig = gäst
-    req.user = null;
+      return res.sendStatus(401); 
   }
 
 

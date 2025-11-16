@@ -2,14 +2,14 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  max-width: 1280px;
+  max-width: 1980px;
   margin: 0 auto;
   text-align: center;
 }
 
 .head-menu {
   width: 100%;
-  background-color: rgba(0, 0, 0, 0.063);
+  background-color: rgba(175, 175, 175, 0.415);
   padding: 60px 20px;
   border-bottom: 3px solid rgba(255, 113, 182, 1);
 
@@ -44,7 +44,7 @@
 
 .nav-buttons button {
   padding: 8px 12px;
-  background: #ff7d8d;
+  background: #646464;
   border: none;
   color: white;
   border-radius: 4px;
@@ -58,20 +58,17 @@
 button {
   border: none;
   border-radius: 8px;
-  padding: 1em 2em;
-  font-size: 1em;
-  font-weight: 500;
+  padding: 8px 9px;
   cursor: pointer;
-  background-color: #ff8bec43;
+  background-color: #000000;
+  color: white;
 }
 
 button:hover {
   border-color: rgba(255, 113, 182, 1)
 }
 
-input,
-select,
-textarea {
+input, textarea {
   background-color: white;
   color: black;
   padding: 7px;
@@ -83,3 +80,33 @@ textarea {
 }
 
 
+@media (max-width: 390px) {
+
+  .head-menu {
+    padding: 20px 10px;
+  }
+
+  .head-menu nav {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .logo img {
+    height: 35px;
+  }
+
+  .nav-buttons {
+    flex-direction: column;
+    width: 100%;
+    gap: 8px;
+  }
+
+  .nav-buttons button {
+    width: 100%;
+    padding: 10px;
+  }
+
+  input, textarea {
+    max-width: 100%;
+  }
+}

@@ -18,6 +18,9 @@ export interface Channels {
   Sk: string;
   name?: string;
   isLocked?: boolean;
+  createdBy?: string;
+  createdAt?: string;     
+  type?: string;   
 }
 
 export interface Message {

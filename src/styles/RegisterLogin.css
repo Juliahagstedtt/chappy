@@ -1,5 +1,5 @@
 .register-container, .login-container {
-    /* background-color: #cdf6ec7c; */
+  background-color: #ffffff;
   max-width: 320px;
   margin: 40px auto;
   padding: 24px 20px;
@@ -7,6 +7,7 @@
   box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   display: flex;
   flex-direction: column;
+  color: #000000;
 }
 
 .register-container h1, .login-container h1 {
@@ -40,4 +41,31 @@
     background: none;    
     color: rgba(255, 113, 182, 1);
     text-decoration: underline;
+}
+
+@media (max-width: 390px) {
+  .register-container,
+  .login-container {
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 20px 15px;
+  }
+
+  .register-container h1,
+  .login-container h1 {
+    font-size: 20px;
+    margin-bottom: 12px;
+  }
+
+  .register,
+  .login {
+    width: 100%;
+    padding: 12px;
+    font-size: 14px;
+    margin-top: 16px;
+  }
+
+  .reg {
+    font-size: 14px;
+  }
 }
